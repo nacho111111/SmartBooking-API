@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.left {
+  flex: 2;
+  border: 2px solid black;
+  padding: 10px;
+}
+
+.right {
+  flex: 1;
+  border: 2px solid black;
+  padding: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  border: 1px solid black;
+  padding: 5px;
+  text-align: left;
+}
+
+.table tr:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.form {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.summary {
+  margin-top: 20px;
+  border-top: 1px solid gray;
+  padding-top: 10px;
+}
