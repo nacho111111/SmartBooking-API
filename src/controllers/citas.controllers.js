@@ -2,13 +2,18 @@ import { pool } from "../db.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
 
 export const getCitas = asyncHandler(async (req, res) => {
-    const { rows } = await pool.query("SELECT * FROM citas ORDER BY hora_atencion ASC");
+    const { rows } = await pool.query(
+        "SELECT * FROM citas ORDER BY hora_atencion ASC"
+    );
     res.json(rows);
 });
 
 export const getCita = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { rows } = await pool.query("SELECT * FROM citas WHERE id = $1", [id]);
+    const { rows } = await pool.query(
+        "SELECT * FROM citas WHERE id_cita = $1",
+        [id]
+    );
     if (rows.length === 0) {
         return res.status(404).json({ message: "Cita no encontrada" });
     }
@@ -26,10 +31,15 @@ export const createCita = asyncHandler(async (req, res) => {
 
 export const deleteCita = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { rowCount } = await pool.query("DELETE FROM citas WHERE id = $1 RETURNING *", [id]);
+    const { rowCount } = await pool.query(
+        "DELETE FROM citas WHERE id_cita = $1 RETURNING *", 
+        [id]
+    );
+
     if (rowCount === 0) {
         return res.status(404).json({ message: "Cita no encontrada" });
     }
+
     res.sendStatus(204);
 });
 
@@ -37,7 +47,7 @@ export const updateCita = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { hora_atencion, nombre_mascota, descripcion } = req.body;
     const { rows } = await pool.query(
-        "UPDATE citas SET hora_atencion = TO_TIMESTAMP($1, 'DD/MM/YYYY HH24:MI:SS'), nombre_mascota = $2, descripcion = $3 WHERE id = $4 RETURNING *",
+        "UPDATE citas SET hora_atencion = $1, nombre_mascota = $2, descripcion = $3 WHERE id_cita = $4 RETURNING *",
         [hora_atencion, nombre_mascota, descripcion, id]
     );
     if (rows.length === 0) {
@@ -51,7 +61,8 @@ export const updateCita = asyncHandler(async (req, res) => {
 export const getCitasDeUsuario = asyncHandler(async (req, res) => {
     
     const { id_usuario } = req.params;
-    const { rows } = await pool.query("SELECT * FROM citas WHERE id_usuario = $1 ORDER BY hora_atencion ASC", [id_usuario]);
+    const { rows } = await pool.query(
+        "SELECT * FROM citas WHERE id_usuario = $1 ORDER BY hora_atencion ASC", [id_usuario]);
     res.json(rows);
 });
 
@@ -59,14 +70,16 @@ export const getCitasDeUsuario = asyncHandler(async (req, res) => {
 export const getCitasHoy = asyncHandler(async (req, res) => {
     const query = `
         SELECT 
-            u.nombre, 
+            c.id_cita,
+            u.id_usuario ,
+            u.nombre_usuario, 
             u.email, 
             u.telefono, 
             c.hora_atencion, 
             c.nombre_mascota, 
             c.descripcion
         FROM citas c
-        INNER JOIN usuarios u ON c.id_usuario = u.id
+        INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
         WHERE c.hora_atencion::date = CURRENT_DATE 
         ORDER BY c.hora_atencion ASC
     `;

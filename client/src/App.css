@@ -29,8 +29,8 @@
   text-align: left;
 }
 
-.table tr:hover {
-  background-color: #eee;
+.table tr td:first-child:hover {
+  background-color: #ff0b0b;
   cursor: pointer;
 }
 
