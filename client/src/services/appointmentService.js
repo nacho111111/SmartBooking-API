@@ -21,7 +21,7 @@ export const createAppointmentWithUser = async (form) => {
   return {
     ...cita,
     id_usuario : user.id_usuario,
-    nombre_usuario: user.nombre,
+    nombre_usuario: user.nombre_usuario,
     email: user.email,
     telefono: user.telefono,
   };

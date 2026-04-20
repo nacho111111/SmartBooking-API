@@ -13,6 +13,10 @@ export default function AppointmentDetail({ appointments , onSaveAll}) {
   useEffect(() => {
   //localStorage.removeItem("facturacion_borrador");
 
+  //console.log(appointments)
+  //console.log("----------")
+  //console.log(localList)
+
   const actualizarLista = () => {
 
     if (appointments.length === 0) return;

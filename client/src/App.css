@@ -1,48 +1,79 @@
+/* Contenedor principal con soporte para móviles */
 .container {
   display: flex;
-  gap: 20px;
+  justify-content: center;
+  gap: 24px;
   padding: 20px;
+  align-items: flex-start; /* Evita que las columnas se estiren innecesariamente */
 }
 
+/* Si la pantalla es pequeña, ponemos uno debajo del otro */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+  .left, .right {
+    width: 100%;
+  }
+}
+
+/* Columna de la Tabla (Citas) */
 .left {
   flex: 2;
-  border: 2px solid black;
-  padding: 10px;
+  background: white;
+  border: 1px solid var(--border); /* Usando la variable del index.css */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
 }
 
+/* Columna del Formulario (Registro/Caja) */
 .right {
   flex: 1;
-  border: 2px solid black;
-  padding: 10px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: sticky; /* Hace que el formulario te siga al hacer scroll */
+  top: 20px;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.table th,
-.table td {
-  border: 1px solid black;
-  padding: 5px;
-  text-align: left;
-}
-
-.table tr td:first-child:hover {
-  background-color: #ff0b0b;
-  cursor: pointer;
-}
-
+/* Mejoras en el formulario */
 .form {
-  margin: 10px 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 12px;
 }
 
+.form label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: -8px; /* Acerca el label al input */
+}
+
+/* Estilos de la tabla de facturación interna */
 .summary {
   margin-top: 20px;
-  border-top: 1px solid gray;
-  padding-top: 10px;
+  border-top: 2px dashed var(--border); /* Un toque visual más moderno */
+  padding-top: 20px;
+}
+
+.summary h2 {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+/* Resaltado para los nombres de usuario clickeables */
+.user-link {
+  color: var(--primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.user-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }

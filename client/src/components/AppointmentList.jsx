@@ -1,11 +1,9 @@
-export default function AppointmentList({ appointments, onSelect }) {
+export default function AppointmentList({ appointments, onSelectUser }) {
   return (
     <table className="table">
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Email</th>
-          <th>Teléfono</th>
           <th>Fecha</th>
           <th>Mascota</th>
           <th>descripcion</th>
@@ -13,10 +11,12 @@ export default function AppointmentList({ appointments, onSelect }) {
       </thead>
       <tbody>
         {appointments.map((a, i) => (
-          <tr key={i} onClick={() => onSelect(a)}>
-            <td>{a.nombre}</td>
-            <td>{a.email}</td>
-            <td>{a.telefono}</td>
+          <tr key={i} onClick={() => onSelectUser(a)}
+             style={{ cursor: 'pointer' }}
+          >
+            <td> 
+              {a.nombre_usuario}
+            </td>
             <td>
               {new Date(a.hora_atencion).toLocaleTimeString('es-CL', {
                   hour: '2-digit',

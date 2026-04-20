@@ -1,5 +1,5 @@
 CREATE TABLE usuarios (
-    id SERIAL PRIMARY KEY,
+    id_usuario SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     telefono VARCHAR(20) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE usuarios (
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS citas (
-    id SERIAL PRIMARY KEY,
+    id_cita SERIAL PRIMARY KEY,
 
     id_usuario INTEGER NOT NULL,
     CONSTRAINT fk_usuario
@@ -29,6 +29,9 @@ CREATE TABLE IF NOT EXISTS citas (
 );
 
 COMMIT;
+ALTER TABLE citas ADD COLUMN id_externo_cal VARCHAR(255);
+ALTER TABLE citas ADD COLUMN estado VARCHAR(255);
+ALTER TABLE citas ADD COLUMN peluquera VARCHAR(255);
 
 BEGIN;
 
@@ -51,7 +54,7 @@ BEGIN
 END $$;
 
 CREATE TABLE IF NOT EXISTS facturas (
-    id SERIAL PRIMARY KEY,
+    id_factura SERIAL PRIMARY KEY,
     id_cita INTEGER NOT NULL,
     id_usuario INTEGER NOT NULL,
     total_peluqueria NUMERIC(12, 2) DEFAULT 0.00,

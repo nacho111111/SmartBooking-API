@@ -5,11 +5,12 @@ import ClientForm from "./components/ClientForm";
 import Summary from "./components/Summary";
 import { createAppointmentWithUser } from "./services/appointmentService";
 import { useAppointments } from "./hooks/useAppointments";
-import "./app.css";
+import UserModal from "./components/UserModal";
+//import "./app.css";
 
 export default function App() {
-  const [selected, setSelected] = useState(null);       // selectes de un user de la lista
   const [showForm, setShowForm] = useState(false);      // bool form de agregar cliente
+  const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
   const { appointments, handleAddAppointment, handleSaveFacturas } = useAppointments(); // citas, factura, fetch
   
@@ -20,7 +21,7 @@ export default function App() {
 
         <AppointmentList
           appointments={appointments}
-          onSelect={setSelected}
+          onSelectUser={setSelectedUser}
         />
 
         <button onClick={() => setShowForm(!showForm)}>
@@ -36,6 +37,11 @@ export default function App() {
         />
         <Summary appointments={appointments} />
       </div>
+
+      <UserModal 
+        user={selectedUser} 
+        onClose={() => setSelectedUser(null)} 
+      />
       
     </div>
   );

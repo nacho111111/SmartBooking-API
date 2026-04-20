@@ -15,7 +15,7 @@ export const getCita = asyncHandler(async (req, res) => {
         [id]
     );
     if (rows.length === 0) {
-        return res.status(404).json({ message: "Cita no encontrada" });
+        return res.status(201).json({ message: "Cita no encontrada" });
     }
     res.json(rows[0]);
 });
