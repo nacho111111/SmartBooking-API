@@ -8,8 +8,8 @@ const handleResponse = async (res) => {
   return res.json();
 };
 
-export const getTodayAppointments = () =>
-    fetch(`${API_URL}/citas/hoy`).then(handleResponse);
+export const getAppointmentsByDay = (dia) =>
+    fetch(`${API_URL}/citas/dia/${dia}`).then(handleResponse);
     
 export const postUsuario = (data) => 
   fetch(`${API_URL}/usuarios`, {

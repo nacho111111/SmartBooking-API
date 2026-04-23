@@ -1,55 +1,45 @@
 import { useEffect, useState } from "react";
 
-export default function AppointmentDetail({ appointments , onSaveAll}) {
+export default function AppointmentDetail({ appointments , onSaveAll, salesList, setSalesList}) {
   
-  const [localList, setLocalList] = useState(() => {
-    const saved = localStorage.getItem("facturacion_borrador");
-    // Si hay datos guardados, usarlos
-    if (saved) return JSON.parse(saved);
-    return [];
-  });
-  
+const actualizarLista = () => {
+  //  localStorage.removeItem("facturacion_borrador");
+  if (appointments.length === 0) return;
 
+  const idsExistentes = new Set(salesList.map(f => f.id_cita));
+  const nuevasCitas = appointments.filter(cita => !idsExistentes.has(cita.id_cita));
+
+  if (nuevasCitas.length > 0) {
+
+    const nuevasFacturas = nuevasCitas.map((cita) => ({
+      id_cita: cita.id_cita,
+      id_usuario: cita.id_usuario,
+      total_peluqueria: 0,
+      total_productos: 0,
+      total_final: 0,
+      tipo_pago: "efectivo",
+    }));
+
+    console.log(nuevasFacturas[3])
+
+    setSalesList(prevList => [...prevList, ...nuevasFacturas]);
+
+  }
+};
   useEffect(() => {
-  //localStorage.removeItem("facturacion_borrador");
-
-  //console.log(appointments)
-  //console.log("----------")
-  //console.log(localList)
-
-  const actualizarLista = () => {
-
-    if (appointments.length === 0) return;
-
-    const idsExistentes = new Set(localList.map(f => f.id_cita));
-    const nuevasCitas = appointments.filter(cita => !idsExistentes.has(cita.id_cita));
-
-    if (nuevasCitas.length > 0) {
-      const nuevasFacturas = nuevasCitas.map((cita) => ({
-        id_cita: cita.id_cita,
-        id_usuario: cita.id_usuario,
-        total_peluqueria: 0,
-        total_productos: 0,
-        total_final: 0,
-        tipo_pago: "efectivo",
-      }));
-
-      setLocalList(prevList => [...prevList, ...nuevasFacturas]);
-    }
-  };
-  actualizarLista();
-}, [appointments]);
+    actualizarLista();
+  }, [appointments]);
 
   // 3. Sincronizar con LocalStorage
   useEffect(() => {
-    if (localList.length > 0) {
-      localStorage.setItem("facturacion_borrador", JSON.stringify(localList));
+    if (salesList.length > 0) {
+      localStorage.setItem("facturacion_borrador", JSON.stringify(salesList));
     }
-  }, [localList]);
+  }, [salesList]);
 
   // 4. Actualizador genérico
   const updateFactura = (index, field, value) => {
-    const updated = [...localList];
+    const updated = [...salesList];
     
     if (field === "total_peluqueria" || field === "total_productos") {
       updated[index][field] = Number(value) || 0;
@@ -60,7 +50,7 @@ export default function AppointmentDetail({ appointments , onSaveAll}) {
       updated[index][field] = value;
     }
 
-    setLocalList(updated);
+    setSalesList(updated);
   };
   
   return (
@@ -77,7 +67,7 @@ export default function AppointmentDetail({ appointments , onSaveAll}) {
           </tr>
         </thead>
         <tbody>
-          {localList.map((f, i) => (
+          {salesList.map((f, i) => (
             <tr key={f.id_cita}>
               <td>
                 <input
@@ -111,8 +101,8 @@ export default function AppointmentDetail({ appointments , onSaveAll}) {
         </tbody>
       </table>
 
-      {localList.length > 0 && (
-        <button onClick={() => onSaveAll(localList)}>
+      {salesList.length > 0 && (
+        <button onClick={() => onSaveAll(salesList)}>
           Finalizar y Guardar Caja
         </button>
       )}

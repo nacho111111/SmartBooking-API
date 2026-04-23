@@ -1,10 +1,10 @@
-export default function Summary({ appointments }) {
-  const totals = appointments.reduce(
+export default function Summary({ salesList }) {
+  const totals = salesList.reduce(
     (acc, a) => {
-      if (!a.total) return acc;
-
-      acc.total += a.total;
-      acc[a.tipoPago] += a.total;
+      if (!a.total_final) return acc;
+      console.log("a")
+      acc.total += a.total_final;
+      acc[a.tipo_pago] += a.total_final;
 
       return acc;
     },

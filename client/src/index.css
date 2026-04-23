@@ -79,6 +79,10 @@ table {
   overflow: hidden;
 }
 
+tr {
+  height: 52px;
+}
+
 th {
   background-color: var(--cafe-deep);
   color: var(--cafe-light);

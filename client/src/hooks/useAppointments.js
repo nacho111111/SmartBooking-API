@@ -1,67 +1,83 @@
 import { useState, useEffect } from "react";
 import { createAppointmentWithUser } from "../services/appointmentService";
-import { getTodayAppointments, postFacturas } from "../services/api";
+import { getAppointmentsByDay, postFacturas } from "../services/api";
+import { useAction } from "./useAction";
+import { dailyClean } from "../utils/dailyClean"
 
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState([]); // citas hoy, user + cita
-  const [loading, setLoading] = useState(false);
+
+  // selector day
+  const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
+  
+  const { loading, run, error } = useAction();
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const data = await getTodayAppointments();
-        setAppointments(data);
-      } catch (e) {
-        console.error("Error al cargar citas:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
+    let mounted = true;
+    const hoy = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    run(async () => {
+        const data = await getAppointmentsByDay(hoy);
+        if (mounted) setAppointments(data);
+      });
+      return () => {
+        mounted = false;
+      };
   }, []);
 
-  const asyncHandler = (fn, onError) => {
-    return async (...args) => {
-      try {
-        return await fn(...args);
-      } catch (error) {
-        console.error(error);
-        if (onError) onError(error);
-      }
-    };
+  useEffect(() => {
+    handleGetAppointmentsByDay(fechaSeleccionada);
+  }, [fechaSeleccionada]);
+
+  useEffect(() => { // actualiza lista factura
+    dailyClean();
+    const interval = setInterval(dailyClean, 15 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleAddAppointment = (form) => {
+    run(async () => { 
+        //console.log(form);
+        const nuevaCita = await createAppointmentWithUser(form);
+        setAppointments((prev) => [...prev, nuevaCita]);
+      },
+      (error) => alert(error.message)
+    )
+  }
+
+  const handleSaveFacturas = (listaFacturas) => {
+    run (async () => { 
+        await postFacturas(listaFacturas);
+        alert("Caja sincronizada 🚀");
+        // borrador de LocalStorage
+        //localStorage.removeItem("facturacion_borrador");
+      },
+      {
+        onError: (error) =>
+        alert("Error al facturar: " + error.message),
+    })
   };
 
-  const handleAddAppointment = asyncHandler( 
-    async (form) => { 
-      const nuevaCita = await createAppointmentWithUser(form);
-      setAppointments((prev) => [...prev, nuevaCita]);
+  const handleGetAppointmentsByDay = (day) => {
+    run(async () => {
+      const data = await getAppointmentsByDay(day);
+      setAppointmentsDay(Array.isArray(data) ? data : []);
     },
     (error) => alert(error.message)
-  )
-
-  const handleSaveFacturas = asyncHandler(
-    async (listaFacturas) => { 
-      await postFacturas(listaFacturas);
-      alert("Caja sincronizada 🚀");
-
-      // borrador de LocalStorage
-      //localStorage.removeItem("facturacion_borrador");
-    },
-    (error) => alert("Error al facturar: " + error.message)
-  );
-
-  const handleUpdate = (updated) => { //cliente, no se usa
-    setAppointments(prev =>
-      prev.map(a => (a.id === updated.id ? updated : a))
-    );
-  };
-    
+    )   
+  }
+  
   return {
     appointments,
-    loading,
     handleAddAppointment,
-    handleUpdate,
-    handleSaveFacturas
+    handleSaveFacturas,
+    fechaSeleccionada,
+    setFechaSeleccionada,
+    appointmentsDay,
+    loading,
+    error
   };
 };
