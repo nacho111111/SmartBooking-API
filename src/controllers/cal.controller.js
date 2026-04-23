@@ -1,5 +1,4 @@
 import { transactionHandler } from "../middlewares/transactionHandler.js";
-import { sendWhatsApp }  from "../webHooks/whatsAppHandle.js";
 export const handleCreate = transactionHandler(async (req, res, client) =>{
   const infoCita = req.body.payload;
 
@@ -16,19 +15,16 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
 
     // Busca o Crea por email 
     let usuario = await client.query(
-      "SELECT * FROM usuarios WHERE email = $1", [nuevaCita.email]); // "SELECT id_usuario FROM usuarios WHERE email = $1", [nuevaCita.email]);
+      "SELECT id_usuario FROM usuarios WHERE email = $1", [nuevaCita.email]);
 
     let idUsuario;
-    let usuarioprueba;
     if (usuario.rows.length === 0) { // comprueba si existe el usuario
       const nuevoUsuario = await client.query(
-        "INSERT INTO usuarios (nombre_usuario, email, telefono) VALUES ($1, $2, $3) RETURNING * ",
+        "INSERT INTO usuarios (nombre_usuario, email, telefono) VALUES ($1, $2, $3) RETURNING id_usuario ",
         [nuevaCita.nombre, nuevaCita.email, nuevaCita.telefono]
       );
       idUsuario = nuevoUsuario.rows[0].id_usuario;
-      usuarioprueba = nuevoUsuario.rows[0];
     } else {
-      usuarioprueba = usuario.rows[0];
       idUsuario = usuario.rows[0].id_usuario;
     }
 
@@ -37,8 +33,6 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
         [ idUsuario, nuevaCita.hora_atencion, nuevaCita.nombre_mascota, nuevaCita.descripcion, nuevaCita.id_cal]
     );
 
-    //await sendWhatsApp(usuarioprueba.telefono, usuarioprueba.nombre_usuario ,nuevaCita.hora_atencion); //????????
-    
     res.status(200).json({ message: "Cita creada con éxito" });
 })
 

@@ -1,5 +1,6 @@
+import { headersConfig } from "./whatsAppHeaders.js"
 
-export const sendWhatsApp = async (telefono, nombre, fechaISO) => {
+export const whatsAppReminder = async (telefono, nombre, fechaISO) => {
     //console.log(telefono + " " +  nombre)
 
     const fechaHora = new Date(fechaISO);
@@ -15,15 +16,7 @@ export const sendWhatsApp = async (telefono, nombre, fechaISO) => {
         month: 'long'
     });
 
-    const token = process.env.WHATSAPP_TOKEN;
-    const phone_id = process.env.PHONE_NUMBER_ID;
-
-    const url = `https://graph.facebook.com/v21.0/${phone_id}/messages`;
-    
-    const config = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    };
+    const  {config, url }= headersConfig();
 
     const body = 
     {

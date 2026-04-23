@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { createUser, deleteUser, getUser, getUsers, updateUser } from "../controllers/users.controllers.js";
-import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasHoy, updateCita } from "../controllers/citas.controllers.js"
+import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasPorDia, updateCita } from "../controllers/citas.controllers.js"
 import { createFactura, createFacturas, deleteFactura, getFactura, getFacturas, updateFactura } from "../controllers/facturas.controllers.js"
-import { hookCitaCal } from "../webHooks/calHandlers.js"
+import { hookCitaCal } from "../webhooks/calHandlers.js"
+import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
+import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
 
 const router = Router();
 
@@ -15,7 +17,7 @@ router.put("/usuarios/:id", updateUser);
 //citas
 //fijas
 router.get("/citas", getCitas);
-router.get("/citas/hoy", getCitasHoy);
+router.get("/citas/dia/:dia", getCitasPorDia);
 router.get("/usuarios/:id_usuario/citas", getCitasDeUsuario);
 //dinamicas
 router.get("/citas/:id", getCita);
@@ -32,7 +34,10 @@ router.delete("/facturas", deleteFactura);
 router.put("/facturas", updateFactura);
 
 //webhooks
+//cal
 router.post("/webhooks/cal", hookCitaCal);
-
+//whatsapp
+router.get("/webhooks/whatsapp", whatsAppVerify);
+router.post("/webhooks/whatsapp", whatsAppAnswers);
 
 export default router;

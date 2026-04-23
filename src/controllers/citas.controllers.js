@@ -67,7 +67,8 @@ export const getCitasDeUsuario = asyncHandler(async (req, res) => {
 });
 
 // Obtener citas programadas para el día de hoy con información del usuario
-export const getCitasHoy = asyncHandler(async (req, res) => {
+export const getCitasPorDia = asyncHandler(async (req, res) => {
+    const { dia } = req.params;
     const query = `
         SELECT 
             c.id_cita,
@@ -80,10 +81,10 @@ export const getCitasHoy = asyncHandler(async (req, res) => {
             c.descripcion
         FROM citas c
         INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
-        WHERE c.hora_atencion::date = CURRENT_DATE 
+        WHERE c.hora_atencion::date = $1 
         ORDER BY c.hora_atencion ASC
     `;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query,[dia]);
     res.json(rows);
 });
