@@ -1,18 +1,20 @@
 :root {
-  /* Tu paleta de cafés profundos */
-  --cafe-crema: #fdfaf7;
-  --cafe-light: #a47148;
-  --cafe-medium: #8b5e34;
-  --cafe-dark: #6f4518;
-  --cafe-deep: #603808;
-  
+  /* Mismos nombres, ahora en escala de azules y oxigeno */
+  --cafe-crema: #e3f2fd;      /* Azul clarito casi blanco (antes crema) */
+  --cafe-light: #4a90e2;      /* Azul brillante (antes café claro) */
+  --cafe-medium: #326699;     /* Azul medio, el de tu gradiente (antes café medio) */
+  --cafe-dark: #274661;       /* Azul petróleo oscuro (antes café oscuro) */
+  --cafe-deep: #1a252f;       /* El gris-1 que pediste (antes café profundo) */
+
   /* Colores de Interfaz */
-  --bg-main: #3d2b1f;       /* Fondo café oscuro profundo */
-  --bg-card: #4d3a2b;       /* Fondo de tarjetas café medio */
-  --bg-input: #5d4a3b;      /* Fondo de inputs */
-  --text-main: #fdfaf7;     /* Texto crema casi blanco */
-  --text-muted: #d2c1b0;
-  --border: #6f4518;
+  --bg-main: #1a252f;         /* Fondo base (tu gris-1) */
+  --bg-card: #243441;         /* Un tono levemente más claro que el fondo para tarjetas */
+  --bg-input: #2c3e50;        /* Fondo de inputs azulado */
+  --text-main: #f8f9fa;       /* Blanco puro/azulado para lectura */
+  --text-muted: #94a3b8;      /* Gris azulado para textos secundarios */
+  --border: #334155;          /* Borde sutil azul oscuro */
+  --gris-1: rgb(26, 37, 47);
+  --gradient-background: radial-gradient(circle,rgba(50, 102, 153, 1) 0%, rgba(39, 70, 97, 1) 57%, rgba(39, 70, 97, 1) 25%, rgba(26, 37, 47, 1) 96%);
   
   --shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   --radius: 12px;
@@ -24,51 +26,68 @@
 
 body {
   margin: 0;
-  background-color: var(--bg-main);
+  /*background-color: var(--bg-main);*/
+  background: #6E4928;
+  background: var(--gradient-background)
 }
 
 /* --- ESTRUCTURA (Lo que estaba en App.css) --- */
-
-.container {
+.containerMain{
   display: flex;
-  justify-content: center;
-  gap: 24px;
-  padding: 40px 20px;
-  align-items: flex-start;
-  max-width: 1300px;
-  margin: 0 auto;
 }
+.container {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 2fr; 
+  gap: 24px;
+  padding: 80px 40px;
 
+  grid-auto-flow: row;
+  align-content: start;
+}
+/*
 @media (max-width: 900px) {
   .container { flex-direction: column; }
   .left, .right { width: 100%; }
+}*/
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
-
 .left, .right {
-  max-width: 60em;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
   box-shadow: var(--shadow);
+
+  
+}
+.left {
+  width: 32vw;
+}
+.right{
+  width: 55vw;
 }
 
-.left { flex: 2; }
+/*
 .right { 
-  flex: 1; 
+
   position: sticky; 
   top: 20px; 
-}
+} 
+*/
 
 /* --- ELEMENTOS GLOBALES --- */
 
 h1, h2, h3 {
-  color: var(--cafe-light);
+  color: var(--text-main);
   margin-top: 0;
 }
 
 /* Tablas con estilo de madera oscura */
-table {
+.table-list, .table-form {
   width: 100%;
   /*display: block;*/
   border-collapse: separate;
@@ -77,6 +96,8 @@ table {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  table-layout: fixed; /* OBLIGATORIO para que funcione el corte de texto */
+  width: 100%;
 }
 
 tr {
@@ -85,7 +106,7 @@ tr {
 
 th {
   background-color: var(--cafe-deep);
-  color: var(--cafe-light);
+  color: var(--text-main);
   padding: 15px;
   text-align: left;
   font-size: 0.85rem;
@@ -93,7 +114,7 @@ th {
 }
 
 td {
-  max-width: 250px;
+  max-width: 100px;
   padding: 14px 15px;
   border-bottom: 1px solid var(--cafe-dark);
   background-color: var(--bg-card);
@@ -107,11 +128,20 @@ td {
 td:has(input,strong,select) {
   padding-bottom: 6px;
   padding-top: 6px;
+  text-overflow: unset;
 }
+
 
 tr:hover td {
   background-color: var(--bg-input); /* Resaltado al pasar el mouse */
 }
+form{
+  font-size: 30px;
+  display: inline-block;
+}
+/*form:last-child{
+  margin-right: 60px;
+}*/
 
 /* Formularios Dark */
 input, select, textarea {
@@ -121,6 +151,8 @@ input, select, textarea {
   padding: 10px 12px;
   border-radius: 6px;
   /*  margin-bottom: 10px; */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -245,4 +277,23 @@ button:active {
   display: block;
   border-top: 1px solid var(--border);
   padding-top: 10px;
+}
+
+.table-responsive{
+  min-height: 575.41px;
+}
+
+.row ,.pagination{
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  }
+
+li{
+  list-style-type: none
+}
+.pagination {
+  justify-content: center;
 }

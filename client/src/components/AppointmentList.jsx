@@ -1,6 +1,6 @@
 export default function AppointmentList({ appointments, onSelectUser }) {
   return (
-    <table className="table">
+    <table className="table-list">
       <thead>
         <tr>
           <th>Nombre</th>

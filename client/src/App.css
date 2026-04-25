@@ -1,3 +1,21 @@
+:root{
+
+  --cafe-crema: #fdfaf7;
+  --cafe-light: #a47148;
+  --cafe-medium: #8b5e34;
+  --cafe-dark: #6f4518;
+  --cafe-deep: #603808;
+
+  
+  
+  /* Colores de Interfaz */
+  --bg-main: #3d2b1f;       /* Fondo café oscuro profundo */
+  --bg-card: #4d3a2b;       /* Fondo de tarjetas café medio */
+  --bg-input: #5d4a3b;      /* Fondo de inputs */
+  --text-main: #fdfaf7;     /* Texto crema casi blanco */
+  --text-muted: #d2c1b0;
+  --border: #6f4518;
+}
 /* Contenedor principal con soporte para móviles */
 .container {
   display: flex;

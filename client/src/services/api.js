@@ -31,3 +31,13 @@ export const postFacturas = (lista) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lista),
   }).then(handleResponse);
+
+export const putCitas = (lista) => 
+  fetch(`${API_URL}/citas/multi`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(lista),
+  }).then(handleResponse);
+
+export const GetfacturasMoreInfo = () => 
+  fetch(`${API_URL}/facturas/info`).then(handleResponse);

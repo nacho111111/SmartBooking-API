@@ -14,7 +14,7 @@ const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada
             />
         </div>
 
-        <table className="table">
+        <table className="table-list">
             <thead>
             <tr>
                 <th>Nombre</th>

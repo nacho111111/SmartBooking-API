@@ -12,6 +12,8 @@ const actualizarLista = () => {
   if (nuevasCitas.length > 0) {
 
     const nuevasFacturas = nuevasCitas.map((cita) => ({
+      asistio: true,
+      peluquera: "peluquera 1",
       id_cita: cita.id_cita,
       id_usuario: cita.id_usuario,
       total_peluqueria: 0,
@@ -20,10 +22,7 @@ const actualizarLista = () => {
       tipo_pago: "efectivo",
     }));
 
-    console.log(nuevasFacturas[3])
-
     setSalesList(prevList => [...prevList, ...nuevasFacturas]);
-
   }
 };
   useEffect(() => {
@@ -57,9 +56,11 @@ const actualizarLista = () => {
     
     <div className="p-4">
       <h3>Panel de Facturación Diaria</h3>
-      <table className="table">
+      <table className="table-form">
         <thead>
           <tr>
+            <th>Asistió</th>
+            <th>Peluquera </th>
             <th>Servicio ($)</th>
             <th>Productos ($)</th>
             <th>Total</th>
@@ -69,6 +70,25 @@ const actualizarLista = () => {
         <tbody>
           {salesList.map((f, i) => (
             <tr key={f.id_cita}>
+              <td>
+                <select 
+                  value={f.asistio} 
+                  onChange={(e) => updateFactura(i, "asistio", e.target.value)}
+                >
+                  <option value={true}>Si</option>
+                  <option value={false}>No</option>
+                </select>
+              </td>
+              <td>
+                <select 
+                  value={f.peluquera} 
+                  onChange={(e) => updateFactura(i, "peluquera", e.target.value)}
+                >
+                  <option value="peluquera 1">peluquera 1</option>
+                  <option value="peluquera 2">peluquera 2</option>
+                  <option value="peluquera 3">peluquera 3</option>
+                </select>
+              </td>
               <td>
                 <input
                   type="number"

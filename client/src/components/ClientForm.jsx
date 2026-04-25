@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef} from "react";
 
 export default function ClientForm({ onAdd }) {
+
+  const formRef = useRef(null);
   const [form, setForm] = useState({
     nombre: "",
     email: "",
@@ -15,6 +17,7 @@ export default function ClientForm({ onAdd }) {
 
   return (
     <form
+      ref={formRef}
       className="form"
       onSubmit={(e) => {
         e.preventDefault();

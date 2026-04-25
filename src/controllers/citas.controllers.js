@@ -21,10 +21,10 @@ export const getCita = asyncHandler(async (req, res) => {
 });
 
 export const createCita = asyncHandler(async (req, res) => {
-    const { id_usuario, hora_atencion, nombre_mascota, descripcion } = req.body;
+    const { id_usuario, hora_atencion, nombre_mascota, descripcion, peluquera, estado } = req.body;
     const { rows } = await pool.query(
-        "INSERT INTO citas (id_usuario, hora_atencion, nombre_mascota, descripcion) VALUES ($1, $2, $3, $4) RETURNING *",
-        [id_usuario, hora_atencion, nombre_mascota, descripcion]
+        "INSERT INTO citas (id_usuario, hora_atencion, nombre_mascota, descripcion, peluquera, estado) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+        [id_usuario, hora_atencion, nombre_mascota, descripcion, peluquera, estado]
     );
     res.status(201).json(rows[0]);
 });
@@ -45,16 +45,24 @@ export const deleteCita = asyncHandler(async (req, res) => {
 
 export const updateCita = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { hora_atencion, nombre_mascota, descripcion } = req.body;
-    const { rows } = await pool.query(
-        "UPDATE citas SET hora_atencion = $1, nombre_mascota = $2, descripcion = $3 WHERE id_cita = $4 RETURNING *",
-        [hora_atencion, nombre_mascota, descripcion, id]
-    );
+    const { hora_atencion, nombre_mascota, descripcion , estado, peluquera} = req.body;
+    const query = `
+        UPDATE citas 
+        SET 
+            hora_atencion = COALESCE($1, hora_atencion), 
+            nombre_mascota = COALESCE($2, nombre_mascota), 
+            descripcion = COALESCE($3, descripcion), 
+            estado = COALESCE($4, estado), 
+            peluquera = COALESCE($5, peluquera) 
+        WHERE id_cita = $6 
+        RETURNING *`;
+    const values = [hora_atencion || null, nombre_mascota || null, descripcion || null, estado || null, peluquera || null, id];
+
+    const { rows } = await pool.query(query,values);
     if (rows.length === 0) {
         return res.status(404).json({ message: "Cita no encontrada" });
     }
     res.json(rows[0]);
-
 });
 
 // Obtener todas las citas de un usuario específico
@@ -87,4 +95,52 @@ export const getCitasPorDia = asyncHandler(async (req, res) => {
 
     const { rows } = await pool.query(query,[dia]);
     res.json(rows);
+});
+
+export const updateCitas = asyncHandler(async (req, res) => {
+    const citas = req.body; // array
+
+    if (!Array.isArray(citas) || citas.length === 0) {
+            return res.status(400).json({ message: "Se esperaba un array de citas" });
+    }
+    
+    const values = [];
+    const placeholders = citas.map((c, i) => {
+        const idx = i * 6;
+
+        values.push(
+        c.hora_atencion || null,
+        c.nombre_mascota || null,
+        c.descripcion || null,
+        c.asistio || null,
+        c.peluquera || null,
+        c.id_cita
+        );
+
+        return `($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5}, $${idx + 6})`;
+    }).join(",");
+
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+        await client.query(`
+            UPDATE citas AS c SET
+                hora_atencion = COALESCE(v.hora_atencion::timestamp, c.hora_atencion),
+                nombre_mascota = COALESCE(v.nombre_mascota, c.nombre_mascota),
+                descripcion = COALESCE(v.descripcion, c.descripcion),
+                asistio = COALESCE(v.asistio::bool, false),
+                peluquera = COALESCE(v.peluquera, c.peluquera)
+            FROM (
+                VALUES ${placeholders}
+            ) AS v(hora_atencion, nombre_mascota, descripcion, asistio, peluquera, id_cita)
+            WHERE c.id_cita = v.id_cita::int
+            `, values);
+        await client.query("COMMIT");
+        res.status(200).json({ message: "Caja sincronizada" });
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 });

@@ -73,23 +73,38 @@ export const updateFactura = asyncHandler(async (req, res) => {
 });
 
 
-export const createFacturas = asyncHandler(async (req, res) => {
-    const facturas = req.body; // Array [{}, {}, ...]
+export const createFacturas = asyncHandler(async (req, res) => { // bulk insert
+    const facturas = req.body;
+
+    if (!Array.isArray(facturas) || facturas.length === 0) {
+        return res.status(400).json({ message: "Se esperaba un array de facturas" });
+    }
+
+    const values = [];
+    const placeholders = facturas.map((f, i) => {
+        const idx = i * 5;
+        values.push(
+            f.id_cita,
+            f.id_usuario,
+            f.total_peluqueria,
+            f.total_productos,
+            f.tipo_pago
+        );
+
+    return `($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5})`;
+    }).join(",");
 
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        for (let f of facturas) {
-            await client.query(
-                `INSERT INTO facturas (id_cita, id_usuario, total_peluqueria, total_productos, tipo_pago)
-                 VALUES ($1, $2, $3, $4, $5)
-                 ON CONFLICT (id_cita) DO UPDATE SET 
-                 total_peluqueria = EXCLUDED.total_peluqueria,
-                 total_productos = EXCLUDED.total_productos,
-                 tipo_pago = EXCLUDED.tipo_pago`,
-                [f.id_cita, f.id_usuario, f.total_peluqueria, f.total_productos, f.tipo_pago]
-            );
-        }
+        await client.query(`
+            INSERT INTO facturas (id_cita, id_usuario, total_peluqueria, total_productos, tipo_pago)
+            VALUES ${placeholders}
+            ON CONFLICT (id_cita) DO UPDATE SET 
+                total_peluqueria = EXCLUDED.total_peluqueria,
+                total_productos = EXCLUDED.total_productos,
+                tipo_pago = EXCLUDED.tipo_pago
+            `, values);
         await client.query('COMMIT');
         res.status(200).json({ message: "Caja sincronizada" });
     } catch (e) {
@@ -98,4 +113,24 @@ export const createFacturas = asyncHandler(async (req, res) => {
     } finally {
         client.release();
     }
+});
+
+export const getFacturasMoreInfo = asyncHandler(async(req,res) =>{ // todas las facturas mas informacion adicional
+    const query = 
+    `SELECT 
+        c.hora_atencion,
+        c.asistio,
+        c.peluquera,
+        c.nombre_mascota,
+        u.nombre_usuario,
+        f.total_peluqueria,
+        f.total_productos,
+        f.total_final,
+        f.tipo_pago
+    FROM facturas f
+    JOIN citas c ON f.id_cita = c.id_cita
+    JOIN usuarios u ON c.id_usuario = u.id_usuario;`
+
+    const { rows } = await pool.query(query);
+    res.json(rows);
 });

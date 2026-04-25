@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { createAppointmentWithUser } from "../services/appointmentService";
-import { getAppointmentsByDay, postFacturas } from "../services/api";
+import { getAppointmentsByDay, postFacturas, putCitas, GetfacturasMoreInfo } from "../services/api";
 import { useAction } from "./useAction";
 import { dailyClean } from "../utils/dailyClean"
 
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState([]); // citas hoy, user + cita
-
   // selector day
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
+  const [FacturasInfo, setFacturasInfo] = useState([]); // facturas todo
   
   const { loading, run, error } = useAction();
 
@@ -32,11 +32,30 @@ export const useAppointments = () => {
     handleGetAppointmentsByDay(fechaSeleccionada);
   }, [fechaSeleccionada]);
 
+  useEffect(() => {
+    handleGetfacturasMoreInfo();
+  }, []);
+
   useEffect(() => { // actualiza lista factura
     dailyClean();
     const interval = setInterval(dailyClean, 15 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const organizarDatosParaGuardar = (listaOriginal) => {
+    return listaOriginal.reduce(
+      (acc, { id_cita, asistio, peluquera, id_usuario, tipo_pago, total_peluqueria, total_productos }) => {
+
+        acc.listaCitas.push({ id_cita, asistio, peluquera });
+        acc.listaFacturas.push({ id_cita, id_usuario, tipo_pago, total_peluqueria, total_productos });
+
+        return acc;
+      },
+      { listaCitas: [], listaFacturas: [] }
+    );
+    // Retornamos ambas listas en un solo objeto
+  return { listaCitas, listaFacturas };
+  };
 
   const handleAddAppointment = (form) => {
     run(async () => { 
@@ -48,12 +67,14 @@ export const useAppointments = () => {
     )
   }
 
-  const handleSaveFacturas = (listaFacturas) => {
+  const handleSaveFacturas = (lista) => {
     run (async () => { 
+        const { listaCitas, listaFacturas } = organizarDatosParaGuardar(lista)
         await postFacturas(listaFacturas);
+        await putCitas(listaCitas);
+
+        handleGetfacturasMoreInfo(); // actualiza lista de facturas 
         alert("Caja sincronizada 🚀");
-        // borrador de LocalStorage
-        //localStorage.removeItem("facturacion_borrador");
       },
       {
         onError: (error) =>
@@ -69,6 +90,13 @@ export const useAppointments = () => {
     (error) => alert(error.message)
     )   
   }
+  const handleGetfacturasMoreInfo = () => {
+    run(async () => {
+      const data = await GetfacturasMoreInfo();
+      setFacturasInfo(Array.isArray(data) ? data : [])
+    })
+  }
+  
   
   return {
     appointments,
@@ -77,6 +105,7 @@ export const useAppointments = () => {
     fechaSeleccionada,
     setFechaSeleccionada,
     appointmentsDay,
+    FacturasInfo,
     loading,
     error
   };

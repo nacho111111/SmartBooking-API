@@ -15,6 +15,7 @@ const UserModal = ({ user, onClose }) => {
           <p><strong>Propietario:</strong> {user.nombre_usuario}</p>
           <p><strong>Teléfono:</strong> {user.telefono || 'No registrado'}</p>
           <p><strong>Email:</strong> {user.email || 'No registrado'}</p>
+          <p><strong>Descripcion:</strong> {user.descripcion || 'No registrado'}</p>
           
           <span className="modal-hint">
             🐾 Mascota: {user.nombre_mascota || user.mascota}
