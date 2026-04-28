@@ -5,6 +5,7 @@ import { createFactura, createFacturas, deleteFactura, getFactura, getFacturas, 
 import { hookCitaCal } from "../webhooks/calHandlers.js"
 import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
 import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
+import { getHistoryNumbers, getMessagesByNum } from "../controllers/history.controller.js"
 
 const router = Router();
 
@@ -36,13 +37,28 @@ router.post("/facturas", createFactura);
 router.delete("/facturas", deleteFactura);
 router.put("/facturas", updateFactura);
 
-
-
 //webhooks
 //cal
 router.post("/webhooks/cal", hookCitaCal);
 //whatsapp
 router.get("/webhooks/whatsapp", whatsAppVerify);
 router.post("/webhooks/whatsapp", whatsAppAnswers);
+
+//history
+router.get("/contacts", getHistoryNumbers)
+router.get("/messages/:num", getMessagesByNum)
+//import { pool } from "../db.js";
+
+//router.get("/histori", async(req,res) => {
+//    const { rows } = await pool.query(`
+//            SELECT role, content 
+//            FROM chat_history 
+//            WHERE whatsapp_number = $1 
+//            ORDER BY created_at DESC 
+//            
+//        `,[]);
+//    res.json(rows);
+//    } 
+//)
 
 export default router;

@@ -82,3 +82,17 @@ COMMIT;
 CREATE INDEX idx_facturas_usuario ON facturas(id_usuario);
 CREATE INDEX idx_facturas_cita ON facturas(id_cita);
 CREATE INDEX idx_facturas_fecha ON facturas(creado_el);
+
+
+
+CREATE TYPE chat_role AS ENUM ('user', 'model');
+
+CREATE TABLE chat_history (
+    id SERIAL PRIMARY KEY,
+    whatsapp_number VARCHAR(20) NOT NULL,
+    role chat_role NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_chat_history_whatsapp_number ON chat_history(whatsapp_number);

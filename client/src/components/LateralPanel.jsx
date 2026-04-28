@@ -138,6 +138,15 @@ const FacturacionDashboard = ({ options , activeTab}) => {
         >
           <span style={{ fontSize: '20px' }}>🔍</span> Búsqueda Avanzada
         </button>
+
+        <button 
+          style={styles.sidebarBtn(activeTab === 'whatsApp')}
+          onClick={() => selectOption('whatsApp')}
+          onMouseEnter={(e) => activeTab !== 'whatsApp' && (e.target.style.backgroundColor = '#2c3e50')}
+          onMouseLeave={(e) => activeTab !== 'whatsApp' && (e.target.style.backgroundColor = 'transparent')}
+        >
+          <span style={{ fontSize: '20px' }}>✅</span> WhatsApp
+        </button>
       </div>
 
       {/* Overlay para cerrar el menú haciendo clic fuera (opcional) */}

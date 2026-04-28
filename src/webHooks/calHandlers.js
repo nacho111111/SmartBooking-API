@@ -1,4 +1,3 @@
-import { pool } from "../db.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
 import { handleCreate, handleReschedule, handleCancel } from "../controllers/cal.controller.js";
 
@@ -8,18 +7,15 @@ export const hookCitaCal = asyncHandler(async (req, res) => {
 
   // Cal.com evento
   if (payload.triggerEvent === "BOOKING_CREATED") {
-    const client = await pool.connect();
-    handleCreate(req,res,client);
+    handleCreate(req,res);
     return;
   }
   else if (payload.triggerEvent === "BOOKING_RESCHEDULED"){
-    const client = await pool.connect();
-    handleReschedule(req,res,client);
+    handleReschedule(req,res);
     return;
   }
   else if (payload.triggerEvent === "BOOKING_CANCELLED"){
-    const client = await pool.connect();
-    handleCancel(req,res,client);
+    handleCancel(req,res);
     return;
   }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createAppointmentWithUser } from "../services/appointmentService";
-import { getAppointmentsByDay, postFacturas, putCitas, GetfacturasMoreInfo } from "../services/api";
+import { getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo, getHistoryNums, getMessByNum } from "../services/api";
 import { useAction } from "./useAction";
 import { dailyClean } from "../utils/dailyClean"
 
@@ -10,6 +10,8 @@ export const useAppointments = () => {
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
   const [FacturasInfo, setFacturasInfo] = useState([]); // facturas todo
+  const [contacts, setContacts] = useState([]); //numeros wsp
+  const [messages, setMessages] = useState([]); //msg wsp
   
   const { loading, run, error } = useAction();
 
@@ -33,7 +35,8 @@ export const useAppointments = () => {
   }, [fechaSeleccionada]);
 
   useEffect(() => {
-    handleGetfacturasMoreInfo();
+    handleGetFacturasMoreInfo();
+    handleGetHistNums();
   }, []);
 
   useEffect(() => { // actualiza lista factura
@@ -73,7 +76,7 @@ export const useAppointments = () => {
         await postFacturas(listaFacturas);
         await putCitas(listaCitas);
 
-        handleGetfacturasMoreInfo(); // actualiza lista de facturas 
+        handleGetFacturasMoreInfo(); // actualiza lista de facturas 
         alert("Caja sincronizada 🚀");
       },
       {
@@ -90,10 +93,22 @@ export const useAppointments = () => {
     (error) => alert(error.message)
     )   
   }
-  const handleGetfacturasMoreInfo = () => {
+  const handleGetFacturasMoreInfo = () => {
     run(async () => {
-      const data = await GetfacturasMoreInfo();
+      const data = await getFacturasMoreInfo();
       setFacturasInfo(Array.isArray(data) ? data : [])
+    })
+  }
+  const handleGetHistNums = () => {
+    run(async () => {
+      const data = await getHistoryNums();
+      setContacts(Array.isArray(data) ? data : [])
+    })
+  }
+  const handleGetMessByNum = (num) => {
+    run(async ()=>{
+      const data = await getMessByNum(num);
+      setMessages(Array.isArray(data) ? data : [])
     })
   }
   
@@ -107,6 +122,9 @@ export const useAppointments = () => {
     appointmentsDay,
     FacturasInfo,
     loading,
-    error
+    error,
+    contacts,
+    handleGetMessByNum,
+    messages
   };
 };

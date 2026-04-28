@@ -39,5 +39,11 @@ export const putCitas = (lista) =>
     body: JSON.stringify(lista),
   }).then(handleResponse);
 
-export const GetfacturasMoreInfo = () => 
+export const getFacturasMoreInfo = () => 
   fetch(`${API_URL}/facturas/info`).then(handleResponse);
+
+export const getHistoryNums = () =>
+  fetch(`${API_URL}/contacts`).then(handleResponse);
+
+export const getMessByNum = (num) =>
+  fetch(`${API_URL}/messages/${num}`).then(handleResponse);

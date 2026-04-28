@@ -13,7 +13,6 @@ export const transactionHandler = (fn) => async (req, res, next) => {
     } catch (error) {
         await client.query("ROLLBACK");
         console.error("Transacción fallida, se hizo ROLLBACK:", error);
-        // Pasamos el error al manejador de errores global de Express
         next(error); 
     } finally {
         client.release();

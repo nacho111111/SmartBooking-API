@@ -9,13 +9,14 @@ import { useAppointments } from "./hooks/useAppointments";
 import UserModal from "./components/UserModal";
 import SalesViewer from "./components/SalesViewer";
 import FacturacionDashboard from "./components/LateralPanel";
+import WhatsAppAdmin from "./components/WhatsAppAdmin";
 //import "./app.css";
 
 export default function App() {
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo } = useAppointments(); // citas, factura, fetch
+  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, contacts, handleGetMessByNum, messages, loading} = useAppointments(); // citas, factura, fetch
   
   const [activeTab, setActiveTab] = useState('factura');
   // Función para cerrar el menú al elegir una opción
@@ -82,6 +83,17 @@ export default function App() {
             />
           </div>
         </div> 
+      )}
+      {activeTab === 'whatsApp' && (
+        <div className="container" >
+          <WhatsAppAdmin
+          contacts={contacts}
+          handleMessages={handleGetMessByNum}
+          messages={messages}
+          loading={loading}
+          />
+        </div>
+
       )}
       <UserModal 
         user={selectedUser} 

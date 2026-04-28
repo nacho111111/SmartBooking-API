@@ -1,4 +1,6 @@
-import { headersConfig } from "./whatsAppHeaders.js"
+import { saveMessage, getChatHistory, clearHistory } from '../models/ChatHistory.js';
+import { sendWhatsAppMessage } from "../external/whatsAppClient.js"
+import { getGeminiResponse } from '../services/geminiService.js';
 
 export const whatsAppAnswers = async (req, res) => {
     const body = req.body;
@@ -7,56 +9,43 @@ export const whatsAppAnswers = async (req, res) => {
     if (body.object !== 'whatsapp_business_account') {
         return res.sendStatus(404);
     }
-
+    res.status(200).send('EVENT_RECEIVED');
     const entry = body.entry?.[0];
     const changes = entry?.changes?.[0]?.value;
 
-    // es un mensaje nuevo del usuario ??
-    // entry.changes.value.messages.text = exist?,
+    if (!(changes?.messages && changes.messages.length > 0)) return // si no hay mensaje se ignora
 
-    if (changes?.messages && changes.messages.length > 0) {
-        const message = changes.messages[0];
+    const message = changes.messages[0];
 
-        if (message.type === 'text') {
-            
-            const texto = message.text?.body;
-            const number = message.from; // Teléfono del usuario
+    if (!(message.type === 'text')) return // si no hay texto lo ignora
+    
+    const text = message.text?.body;
+    const num = message.from; // Teléfono del usuario
 
-            console.log(`Mensaje de ${number}: ${texto}`);
+    console.log(`Mensaje de ${num}: ${texto}`);
 
-            answers(number);
-        } else {
-            console.log("Llegó algo que no es texto, tipo:", message.type);
-        }
-    }   
-    res.status(200).send('EVENT_RECEIVED');
+    const contexto = `
+        Precios base:
+        Perro Pequeño (Poodle, Yorkie): $15.000.
+        Perro Mediano (Cocker, Beagle): $20.000.
+        Perro Grande (Labrador, Golden): $30.000.
+        Nota: El precio final depende del estado del pelaje (nudos tienen recargo de $5.000).
+        `;
+
+    const context = `CONTEXTO: ${contexto}\n\nMENSAJE USUARIO: ${text}`;
+    const hist = await getChatHistory(num);
+    const resp = await getGeminiResponse(context, hist);
+
+    await saveMessage(num, 'user', text);
+    await saveMessage(num, 'model', resp);
+
+    console.log(resp)
+
+    await sendWhatsAppMessage(num, resp);
 };
 
 const answers = async (number) => {
-    const  {config, url }= headersConfig();
-    const body = {
-        "messaging_product": "whatsapp",
-        "to": number,
-        "type": "text",
-        "text": {
-            "body": "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/56963926122"
-        }
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: config,
-            body: JSON.stringify(body)
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(`Error WhatsApp: ${data.error?.message || response.statusText}`);
-        }
-
-        return data;
-    } catch (error) {
-        console.error("Fallo al enviar WhatsApp:", error.message);
-    }
+    const bodyResponse = "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/56963926122"
+    sendWhatsAppMessage(number, bodyResponse)
 };  
+

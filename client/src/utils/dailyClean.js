@@ -1,4 +1,4 @@
-export const dailyClean = () => { //lista factura
+export const dailyClean = () => { 
   const AHORA = new Date();
   const HOY_STR = AHORA.toISOString().split('T')[0]; // "2026-04-22"
   const ULTIMA_LIMPIEZA = localStorage.getItem("ultima_limpieza_factura");
