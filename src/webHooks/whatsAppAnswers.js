@@ -45,7 +45,7 @@ export const whatsAppAnswers = async (req, res) => {
 };
 
 const answers = async (number) => {
-    const bodyResponse = "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/56963926122"
+    const bodyResponse = "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/-"
     sendWhatsAppMessage(number, bodyResponse)
 };  
 
