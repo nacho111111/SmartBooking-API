@@ -36,10 +36,7 @@ ALTER TABLE citas ADD COLUMN asistio BOOLEAN DEFAULT NULL;
 
 BEGIN;
 
-CREATE INDEX IF NOT EXISTS idx_citas_usuario ON citas(id_usuario);
-CREATE INDEX IF NOT EXISTS idx_citas_fecha ON citas(hora_atencion);
-CREATE INDEX IF NOT EXISTS idx_usuario_fecha ON usuarios(nombre);
-CREATE INDEX IF NOT EXISTS idx_usuario_email ON usuarios(email);
+
 
 COMMIT;
 
@@ -79,12 +76,6 @@ CREATE TABLE IF NOT EXISTS facturas (
 COMMIT;
 
 
-CREATE INDEX idx_facturas_usuario ON facturas(id_usuario);
-CREATE INDEX idx_facturas_cita ON facturas(id_cita);
-CREATE INDEX idx_facturas_fecha ON facturas(creado_el);
-
-
-
 CREATE TYPE chat_role AS ENUM ('user', 'model');
 
 CREATE TABLE chat_history (
@@ -95,4 +86,55 @@ CREATE TABLE chat_history (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
+ALTER TABLE usuarios ADD COLUMN bot_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE chat_history DROP COLUMN bot_active;
+
+DELETE FROM usuarios
+WHERE ctid NOT IN (
+    SELECT MIN(ctid)
+    FROM usuarios
+    GROUP BY telefono
+);
+
+DELETE FROM facturas
+WHERE id_usuario IN (
+    SELECT id_usuario 
+    FROM usuarios
+    WHERE ctid NOT IN (
+        SELECT MIN(ctid)
+        FROM usuarios
+        GROUP BY telefono 
+    )
+);
+
+ALTER TABLE usuarios ADD CONSTRAINT unique_usuario_telefono UNIQUE (telefono);
+
+UPDATE usuarios  -- borrar +
+SET telefono = REPLACE(telefono, '+', '') 
+WHERE telefono LIKE '+%';
+
+CREATE INDEX idx_citas_usuario ON citas(id_usuario);
+CREATE INDEX idx_citas_fecha ON citas(hora_atencion);
+CREATE INDEX idx_usuario_fecha ON usuarios(nombre);
+CREATE INDEX idx_usuario_email ON usuarios(email);
+CREATE INDEX idx_usuarios_tel ON usuarios(telefono);
+CREATE INDEX idx_facturas_usuario ON facturas(id_usuario);
+CREATE INDEX idx_facturas_cita ON facturas(id_cita);
+CREATE INDEX idx_facturas_fecha ON facturas(creado_el);
+
 CREATE INDEX idx_chat_history_whatsapp_number ON chat_history(whatsapp_number);
+CREATE INDEX idx_chat_history_num ON chat_history(whatsapp_number);
+
+DROP INDEX idx_chat_history_whatsapp_number;
+
+ALTER TABLE usuarios 
+DROP CONSTRAINT unique_usuario_telefono;
+
+ALTER TABLE chat_history
+ADD CONSTRAINT fk_chat_usuario
+FOREIGN KEY (whatsapp_number) 
+REFERENCES usuarios(telefono)
+ON UPDATE CASCADE
+ON DELETE CASCADE;

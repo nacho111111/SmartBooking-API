@@ -10,7 +10,7 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
     id_cal: infoCita.uid,
     nombre: infoCita.responses.name.value,
     email: infoCita.responses.email.value,
-    telefono: infoCita.responses.attendeePhoneNumber.value,
+    telefono: infoCita.responses.attendeePhoneNumber.value.replace('+', ''),// quita el +
     hora_atencion: infoCita.startTime,
     nombre_mascota: infoCita.responses.title?.value || "Sin nombre",
     descripcion: infoCita.responses.notes?.value || "Sin descripcion"
@@ -18,7 +18,7 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
 
     // Busca o Crea por email o telefono 
     let usuario = await client.query(
-      "SELECT id_usuario FROM usuarios WHERE email = $1 OR telefono = $2", [nuevaCita.email, nuevaCita.telefono]);
+      "SELECT id_usuario FROM usuarios WHERE telefono = $2 OR email = $1", [nuevaCita.telefono, nuevaCita.email]);
 
     let idUsuario;
     if (usuario.rows.length === 0) { // comprueba si existe el usuario
@@ -29,6 +29,16 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
       idUsuario = nuevoUsuario.rows[0].id_usuario;
     } else {
       idUsuario = usuario.rows[0].id_usuario;
+      // actualiza el usuario si es necesario
+      await client.query(`
+        UPDATE usuarios 
+        SET 
+        nombre_usuario = COALESCE($1, nombre_usuario),
+        email = COALESCE($2, email),
+        telefono = COALESCE($3, telefono)
+        WHERE id_usuario = $4;`,
+        [nuevaCita.nombre, nuevaCita.email, nuevaCita.telefono, idUsuario]
+      );
     }
 
     await client.query(

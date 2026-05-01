@@ -4,20 +4,23 @@ import { GoogleGenAI } from '@google/genai';
 const client = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
-export const getGeminiResponse = async (userMessage, history = []) => {
+export const getGeminiResponse = async (history = []) => {
   try {
     const response = await client.models.generateContent({
       model: 'gemini-2.5-flash-lite', 
-      contents: [
-        ...history,
-        { role: 'user', parts: [{ text: userMessage }] }
-      ],
+      contents: [history],
       config: {
         systemInstruction: `
-        Eres el asistente de Peluqueria canina & feline boutique. 
-        Si el cliente quiere agendar una cita, 
-        proporciónale este enlace: https://cal.com/nacho-3oejwr/15min?overlayCalendar=true. 
-        Dile que ahí podrá elegir la hora que más le acomode que seleccione un dia, una de las horas disponibles y tus datos.`,
+          Eres el asistente de Peluqueria canina & feline boutique. 
+
+          Precios base:
+          - Perro Pequeño: (Poodle, Yorkie): $15.000.
+          - Perro Mediano: (Cocker, Beagle): $20.000.
+          - Perro Grande: (Labrador, Golden): $30.000.
+          - nudos: recargo de $5.000).
+          
+          Si el cliente quiere agendar una cita, 
+          mencionale que puede precionar el boton de "Reservar hora" de arriba .`,
       },
     });
 

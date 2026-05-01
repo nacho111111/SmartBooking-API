@@ -1,8 +1,11 @@
-import { saveMessage, getChatHistory, clearHistory } from '../models/ChatHistory.js';
+import { saveMessage, getChatHistory, clearHistory} from '../models/ChatHistory.js';
 import { sendWhatsAppMessage } from "../external/whatsAppClient.js"
-import { getGeminiResponse } from '../services/geminiService.js';
+import { handleMessage } from "../logic/questionSystem/index.js"
+import { getBotActive, getUserByNum } from "../Services/dbService.js"
+import { asyncHandler } from '../middlewares/asyncHandler.js';
 
-export const whatsAppAnswers = async (req, res) => {
+
+export const whatsAppAnswers = asyncHandler(async (req, res) => {
     const body = req.body;
 
     //  Verificación básica
@@ -22,30 +25,40 @@ export const whatsAppAnswers = async (req, res) => {
     const text = message.text?.body;
     const num = message.from; // Teléfono del usuario
 
-    console.log(`Mensaje de ${num}: ${texto}`);
+    if (!botActive(num,changes)) return // si no esta activo, crea usuario si no existe
 
-    const contexto = `
-        Precios base:
-        Perro Pequeño (Poodle, Yorkie): $15.000.
-        Perro Mediano (Cocker, Beagle): $20.000.
-        Perro Grande (Labrador, Golden): $30.000.
-        Nota: El precio final depende del estado del pelaje (nudos tienen recargo de $5.000).
-        `;
-
-    const context = `CONTEXTO: ${contexto}\n\nMENSAJE USUARIO: ${text}`;
-    const hist = await getChatHistory(num);
-    const resp = await getGeminiResponse(context, hist);
+    console.log(`Mensaje de ${num}: ${text}`);
 
     await saveMessage(num, 'user', text);
+    const hist = await getChatHistory(num);
+    const resp = await handleMessage(text,hist,num);
+
     await saveMessage(num, 'model', resp);
 
+    //console.log(resp)
     console.log(resp)
-
     await sendWhatsAppMessage(num, resp);
-};
+});
 
 const answers = async (number) => {
-    const bodyResponse = "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/56963926122"
+    const bodyResponse = "¡Hola! 👋 \nEste es un número automático solo para recordatorios. \nPara conversar conmigo, escríbeme aquí: \n👉 https://wa.me/-"
     sendWhatsAppMessage(number, bodyResponse)
 };  
 
+async function botActive(num,changes){
+    const user = await getUserByNum(num);
+    let id;
+    if( !user ) {
+        const name = changes.contact[0]?.profile?.name
+        const newid = await setUser(num,name)
+        id = newid;
+    }
+    else {
+        id = user;
+    }
+    const active = await getBotActive(id)
+
+    if(!active) return false // si esta inactivo 
+
+    return true;
+}

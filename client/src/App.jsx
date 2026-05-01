@@ -16,7 +16,7 @@ export default function App() {
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, contacts, handleGetMessByNum, messages, loading} = useAppointments(); // citas, factura, fetch
+  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, contacts, handleGetMessByNum, msgsMore, handleSendMensagge, handleUpdateBotState, loading} = useAppointments(); // citas, factura, fetch
   
   const [activeTab, setActiveTab] = useState('factura');
   // Función para cerrar el menú al elegir una opción
@@ -85,12 +85,15 @@ export default function App() {
         </div> 
       )}
       {activeTab === 'whatsApp' && (
+        
         <div className="container" >
           <WhatsAppAdmin
           contacts={contacts}
           handleMessages={handleGetMessByNum}
-          messages={messages}
+          msgsMore={msgsMore}
           loading={loading}
+          sendMsg={handleSendMensagge}
+          SetBotState={handleUpdateBotState}
           />
         </div>
 

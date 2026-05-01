@@ -1,16 +1,45 @@
 import React, { useState, useEffect } from 'react';
 
-const WhatsAppAdmin = ({contacts, handleMessages, messages, loading}) => {
+const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, SetBotState}) => {
   const [selectedContact, setSelectedContact] = useState(null);
+  const [newMessage, setNewMessage] = useState(""); // enviar msg
+  const [localMsgs, setLocalMsgs] = useState("");
 
+  
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+    
+    //console.log(`Enviando a ${selectedContact}: ${newMessage}`);
+    sendMsg(selectedContact, newMessage)
+    
+    // Limpiar el input después de enviar
+    setNewMessage("");
+    handleMessages(selectedContact)
+  };
+
+  const handleBotState = async (val) =>{
+    SetBotState(selectedContact, val)
+    setLocalMsgs(prev => ({
+            ...prev,
+            bot_active: val
+        }));
+  }
   //Cargar mensajes cuando cambia el contacto seleccionado
   useEffect(() => {
     if (selectedContact) {
       handleMessages(selectedContact);
     }
   }, [selectedContact]);
+  useEffect(() => {
+    if (msgsMore) {
+      setLocalMsgs(msgsMore);
+    }
+  }, [msgsMore]);
 
-const styles = {
+  // main min-height: 100vh position: relative
+  // div position: absolute, top:50%, left:50%, transform traslate (-50%,-50%)
+
+  const styles = {
     main1: {
         width: '125%',
         display: 'flex',
@@ -77,7 +106,7 @@ const styles = {
       overflowY: 'auto',
       padding: '24px',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column-reverse',
       gap: '16px'
     },
     bubble: (isModel) => ({
@@ -103,18 +132,51 @@ const styles = {
       justifyContent: 'center',
       color: '#6b7280',
       textAlign: 'center'
+    },
+    // ... tus estilos anteriores ...
+    inputArea: {
+      padding: '10px 16px',
+      backgroundColor: '#f0f2f5',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      borderTop: '1px solid #d1d5db'
+    },
+    input: {
+      flex: 1,
+      padding: '10px 15px',
+      borderRadius: '8px',
+      border: 'none',
+      outline: 'none',
+      fontSize: '15px',
+      color: '#334155',
+      backgroundColor: '#ffffff'
+    },
+    sendButton: {
+      backgroundColor: '#00a884', // Verde WhatsApp
+      color: 'white',
+      border: 'none',
+      borderRadius: '50%',
+      width: '40px',
+      height: '40px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '18px',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
     }
   };
 
   return (
-    <div style={styles.main1}>
+  <div style={styles.main1}>
     <div style={styles.container}>
       {/* LADO IZQUIERDO: Contactos */}
       <div style={styles.sidebar}>
         <div style={styles.sidebarHeader}>Chats SmartBooking</div>
         <div style={styles.contactList}>
           {contacts.map((contact) => (
-            <div
+            <div 
               key={contact.whatsapp_number}
               onClick={() => setSelectedContact(contact.whatsapp_number)}
               style={styles.contactItem(selectedContact === contact.whatsapp_number)}
@@ -131,14 +193,15 @@ const styles = {
       {/* LADO DERECHO: Chat */}
       <div style={styles.chatWindow}>
         {selectedContact ? (
-          <>
+          <> 
             <div style={styles.chatHeader}>
               <div style={styles.avatar}></div>
-              <p style={{ margin: 0, fontWeight: 'bold' ,color: "#535b63"}}>+{selectedContact}</p>
+              <p style={{ margin: 0, fontWeight: 'bold', color: "#535b63" }}>+{selectedContact}</p>
             </div>
 
+            {/* Área de Mensajes */}
             <div style={styles.messagesArea}>
-              {messages.map((msg, index) => {
+              {localMsgs?.messages?.map((msg, index) => {
                 const isModel = msg.role === 'model';
                 return (
                   <div key={index} style={styles.bubble(isModel)}>
@@ -151,6 +214,46 @@ const styles = {
               })}
               {loading && <p style={{ textAlign: 'center', color: '#6b7280' }}>Cargando...</p>}
             </div>
+
+            {/* --- NUEVA ÁREA DE INPUT --- */}
+            <div style={styles.inputArea}>
+              {localMsgs.bot_active ? (
+                /* ESTADO: TICKET CERRADO (BOT PRENDIDO) */
+                <button 
+                  onClick={() => handleBotState(false)} 
+                  style={styles.startTicketButton}
+                >
+                  Ticket Cerrado - Iniciar Atención Humana
+                </button>
+              ) : (
+                /* ESTADO: TICKET ABIERTO (BOT APAGADO) */
+                <>
+                  <button 
+                    onClick={() => handleBotState(true)} 
+                    style={styles.robotButton}
+                    title="Cerrar ticket y reactivar Bot"
+                  >
+                    🤖
+                  </button>
+                  
+                  <input
+                    type="text"
+                    placeholder="Escribe un mensaje..."
+                    style={styles.input}
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleBotState(true)}
+                  />
+                  
+                  <button 
+                    onClick={handleSendMessage}
+                    style={styles.sendButton}
+                  >
+                    ➤
+                  </button>
+                </>
+              )}
+            </div>
           </>
         ) : (
           <div style={styles.noChat}>
@@ -162,8 +265,8 @@ const styles = {
         )}
       </div>
     </div>
-    </div>
+  </div>
   );
-};
+}
 
 export default WhatsAppAdmin;

@@ -1,7 +1,8 @@
 import { pool } from "../db.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
+import { sendWhatsAppMessage } from "../external/whatsappClient.js";
 
-export const getHistoryNumbers = asyncHandler(async(req,res) => {
+export const getHistoryNumbers = asyncHandler(async (req, res) => {
     const { rows } = await pool.query(
         `SELECT whatsapp_number 
          FROM chat_history 
@@ -9,13 +10,54 @@ export const getHistoryNumbers = asyncHandler(async(req,res) => {
          ORDER BY MAX(created_at) DESC;`
     )
     res.json(rows);
-})
+});
 
 export const getMessagesByNum = asyncHandler(async(req,res)=>{
     const { num } = req.params;
-    const { rows } = await pool.query(
-        "SELECT role, content, created_at FROM chat_history WHERE whatsapp_number = $1 ORDER BY created_at ASC;",
-        [num]
+    const query = (`
+        SELECT 
+            ch.role, ch.content, ch.created_at, 
+            u.nombre_usuario, u.bot_active, u.telefono
+        FROM (
+            SELECT * FROM chat_history 
+            WHERE whatsapp_number = $1 
+            ORDER BY created_at DESC 
+            LIMIT 10
+        ) ch
+        JOIN usuarios u ON ch.whatsapp_number = u.telefono
+        ORDER BY ch.created_at ASC;
+    `
     )
-    res.json(rows);
+    const { rows } = await pool.query(query,[num]) 
+
+    const response = {
+        nombre_usuario: rows[0].nombre_usuario,
+        bot_active: rows[0].bot_active,
+        telefono: rows[0].telefono,
+        messages: rows.map(r => ({ role: r.role, content: r.content, created_at: r.created_at }))
+    };
+
+    res.json(response);
 })
+
+export const sendMessageManual = asyncHandler(async (req, res) => { // enviar mensage a whatsapp
+    const { to, message } = req.body;
+
+    if (!to || !message) {
+        return res.status(400).json({ error: "Faltan datos (to o message)" });
+    }
+
+    // fetch a Meta
+    const metaResponse = await sendWhatsAppMessage(to, message);
+
+    // Si Meta responde, guarda DB
+    if (metaResponse.success) {
+        
+        return res.status(200).json({ 
+            success: true, 
+            message: "Mensaje enviado y guardado" 
+        });
+    } else {
+        throw new Error("Error al enviar mensaje vía WhatsApp API");
+    }
+});

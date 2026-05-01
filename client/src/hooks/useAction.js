@@ -9,7 +9,6 @@ export const useAction = () => {
 
     setCount(c => c + 1);
     setError(null);
-
     try {
       return await fn();
     } catch (err) {

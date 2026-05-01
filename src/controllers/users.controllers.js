@@ -46,3 +46,12 @@ export const updateUser = asyncHandler(async (req, res) => {
     res.json(rows[0]);
 });
 
+export const setBotActive = asyncHandler(async (req,res) => {
+    
+    const { num } = req.params;
+    const { bot_active } = req.body;
+    const query = 'UPDATE usuarios SET bot_active = $1 WHERE telefono = $2 RETURNING bot_active'
+    const { rows } = await pool.query(query, [bot_active, num])
+    res.sendStatus(204);
+})
+

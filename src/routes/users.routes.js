@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { createUser, deleteUser, getUser, getUsers, updateUser } from "../controllers/users.controllers.js";
+import { createUser, deleteUser, getUser, getUsers, updateUser, setBotActive } from "../controllers/users.controllers.js";
 import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasPorDia, updateCita, updateCitas } from "../controllers/citas.controllers.js"
 import { createFactura, createFacturas, deleteFactura, getFactura, getFacturas, updateFactura, getFacturasMoreInfo } from "../controllers/facturas.controllers.js"
 import { hookCitaCal } from "../webhooks/calHandlers.js"
 import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
 import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
-import { getHistoryNumbers, getMessagesByNum } from "../controllers/history.controller.js"
+import { getHistoryNumbers, getMessagesByNum, sendMessageManual } from "../controllers/history.controller.js"
 
 const router = Router();
 
@@ -44,21 +44,25 @@ router.post("/webhooks/cal", hookCitaCal);
 router.get("/webhooks/whatsapp", whatsAppVerify);
 router.post("/webhooks/whatsapp", whatsAppAnswers);
 
-//history
-router.get("/contacts", getHistoryNumbers)
-router.get("/messages/:num", getMessagesByNum)
-//import { pool } from "../db.js";
+router.post("/messages/send", sendMessageManual)
 
-//router.get("/histori", async(req,res) => {
-//    const { rows } = await pool.query(`
-//            SELECT role, content 
-//            FROM chat_history 
-//            WHERE whatsapp_number = $1 
-//            ORDER BY created_at DESC 
-//            
-//        `,[]);
-//    res.json(rows);
-//    } 
-//)
+//chat_history
+router.get("/contacts", getHistoryNumbers)   
+router.get("/messages/:num", getMessagesByNum)
+
+router.patch("/botactive/:num", setBotActive)
+
+// import { pool } from "../db.js";
+
+// router.get("/histori", async(req,res) => {
+//     const { rows } = await pool.query(`
+//             SELECT * 
+//             FROM chat_history 
+             
+            
+//         `);
+//     res.json(rows);
+//     } 
+// )
 
 export default router;

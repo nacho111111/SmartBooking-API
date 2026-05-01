@@ -16,7 +16,7 @@ export const whatsAppReminder = async (telefono, nombre, fechaISO) => {
         month: 'long'
     });
 
-    const  {config, url }= headersConfig();
+    const  {config, url}= headersConfig();
 
     const body = 
     {

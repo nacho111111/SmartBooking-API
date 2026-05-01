@@ -1,5 +1,5 @@
-export const sendWhatsAppMessage = async(number,aiResponse) => {
-    const  {headers, url, body}= responseWSConfig(number, aiResponse);
+export const sendWhatsAppMessage = async(number,msg) => {
+    const  {headers, url, body}= responseWSConfig(number, msg);
 
     try {
         const response = await fetch(url, {

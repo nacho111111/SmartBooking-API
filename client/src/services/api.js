@@ -5,6 +5,9 @@ const handleResponse = async (res) => {
     const errorText = await res.text();
     throw new Error(errorText || "Error en la petición");
   }
+  if (res.status === 204) {
+    return null; 
+  }
   return res.json();
 };
 
@@ -47,3 +50,22 @@ export const getHistoryNums = () =>
 
 export const getMessByNum = (num) =>
   fetch(`${API_URL}/messages/${num}`).then(handleResponse);
+
+export const postSendMessage = (from, msg) =>
+  fetch(`${API_URL}/messages/send`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      {
+        "to": from,
+        "message": msg
+      }
+    ),
+  }).then(handleResponse);
+  
+export const patchBotActive = (num,val) =>
+  fetch(`${API_URL}/botactive/${num}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bot_active: val })
+    }).then(handleResponse);
