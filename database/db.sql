@@ -123,8 +123,6 @@ CREATE INDEX idx_usuarios_tel ON usuarios(telefono);
 CREATE INDEX idx_facturas_usuario ON facturas(id_usuario);
 CREATE INDEX idx_facturas_cita ON facturas(id_cita);
 CREATE INDEX idx_facturas_fecha ON facturas(creado_el);
-
-CREATE INDEX idx_chat_history_whatsapp_number ON chat_history(whatsapp_number);
 CREATE INDEX idx_chat_history_num ON chat_history(whatsapp_number);
 
 DROP INDEX idx_chat_history_whatsapp_number;

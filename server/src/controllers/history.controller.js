@@ -1,6 +1,6 @@
 import { pool } from "../db.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
-import { sendWhatsAppMessage } from "../external/whatsappClient.js";
+import { sendWhatsAppMessage } from "../external/whatsAppClient.js";
 import { setMensaje } from "../Services/dbService.js";
 
 export const getHistoryNumbers = asyncHandler(async (req, res) => {
