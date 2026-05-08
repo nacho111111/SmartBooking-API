@@ -1,10 +1,8 @@
-import { headersConfig } from "./whatsAppHeaders.js"
 
 export const whatsAppReminder = async (telefono, nombre, fechaISO) => {
     //console.log(telefono + " " +  nombre)
 
     const fechaHora = new Date(fechaISO);
-
     const hora = fechaHora.toLocaleTimeString('es-CL', { // transforma  hora legible
         hour: '2-digit',
         minute: '2-digit',
@@ -16,7 +14,15 @@ export const whatsAppReminder = async (telefono, nombre, fechaISO) => {
         month: 'long'
     });
 
-    const  {config, url}= headersConfig();
+    const token = process.env.WHATSAPP_TOKEN;
+    const phone_id = process.env.PHONE_NUMBER_ID;
+
+    const url = `https://graph.facebook.com/v21.0/${phone_id}/messages`;
+    
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
 
     const body = 
     {
@@ -65,7 +71,7 @@ export const whatsAppReminder = async (telefono, nombre, fechaISO) => {
     try {
         const response = await fetch(url, {
             method: 'POST',
-            headers: config,
+            headers: headers,
             body: JSON.stringify(body)
         });
 

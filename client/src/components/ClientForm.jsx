@@ -1,6 +1,6 @@
 import { useState, useRef} from "react";
 
-export default function ClientForm({ onAdd }) {
+export default function ClientForm({ onAdd ,setShowForm }) {
 
   const formRef = useRef(null);
   const [form, setForm] = useState({
@@ -22,6 +22,7 @@ export default function ClientForm({ onAdd }) {
       onSubmit={(e) => {
         e.preventDefault();
         onAdd(form);
+        setShowForm(false);
       }}
     >
       <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />

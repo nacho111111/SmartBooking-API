@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createAppointmentWithUser } from "../services/appointmentService";
-import { getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo, getHistoryNums, getMessByNum, postSendMessage, patchBotActive } from "../services/api";
+import { getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo } from "../services/api";
 import { useAction } from "./useAction";
 import { dailyClean } from "../utils/dailyClean"
 
@@ -10,8 +10,6 @@ export const useAppointments = () => {
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
   const [FacturasInfo, setFacturasInfo] = useState([]); // facturas todo
-  const [contacts, setContacts] = useState([]); //numeros wsp
-  const [msgsMore, setmsgsMore] = useState([]); //msg wsp
   
   const { loading, run, error } = useAction();
 
@@ -36,7 +34,6 @@ export const useAppointments = () => {
 
   useEffect(() => {
     handleGetFacturasMoreInfo();
-    handleGetHistNums();
   }, []);
 
   useEffect(() => { // actualiza lista factura
@@ -99,31 +96,7 @@ export const useAppointments = () => {
       setFacturasInfo(Array.isArray(data) ? data : [])
     })
   }
-  const handleGetHistNums = () => {
-    run(async () => {
-      const data = await getHistoryNums();
-      setContacts(Array.isArray(data) ? data : [])
-    })
-  }
-  const handleGetMessByNum = (num) => {
-    run(async ()=>{
-      const data = await getMessByNum(num);
-      setmsgsMore(data)
-    })
-  }
-  const handleSendMensagge = (from,msg) => {
-    run(async ()=> {
-      await postSendMessage(from,msg)
-    })
-  }
-  const handleUpdateBotState = (num,val) => {
-    run(async ()=>{
-      await patchBotActive(num,val)
-    })
-  }
-  
-  
-  
+ 
   return {
     appointments,
     handleAddAppointment,
@@ -134,10 +107,5 @@ export const useAppointments = () => {
     FacturasInfo,
     loading,
     error,
-    contacts,
-    handleGetMessByNum,
-    msgsMore,
-    handleSendMensagge,
-    handleUpdateBotState
   };
 };

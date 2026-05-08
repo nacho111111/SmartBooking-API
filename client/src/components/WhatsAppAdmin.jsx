@@ -1,20 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { io } from "socket.io-client";
 
-const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, SetBotState}) => {
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [newMessage, setNewMessage] = useState(""); // enviar msg
-  const [localMsgs, setLocalMsgs] = useState("");
+const API_URL = import.meta.env.VITE_API_URL
+const socket = io(API_URL, { withCredentials: true });
 
-  
+const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, SetBotState}) => {
+  const [selectedContact, setSelectedContact] = useState("");
+  const selectedContactRef = useRef(selectedContact); // para socket
+  const [newMessage, setNewMessage] = useState(""); // mensaje a enviar
+  const [localMsgs, setLocalMsgs] = useState(null);
+  const messagesRef = useRef(null);
+
+  // contacts = { whatsapp_number, numbre_usuario}
+  // msgMore = {
+  //  nombre_usuario, bot_active, telefono, 
+  //  messages:[
+  //      {role, content, create_at},{role, content, create_at},...
+  //  ]
+  //}
+ 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     
     //console.log(`Enviando a ${selectedContact}: ${newMessage}`);
-    sendMsg(selectedContact, newMessage)
-    
+    sendMsg(selectedContact, newMessage);
     // Limpiar el input después de enviar
     setNewMessage("");
-    handleMessages(selectedContact)
+
   };
 
   const handleBotState = async (val) =>{
@@ -27,7 +39,7 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
   //Cargar mensajes cuando cambia el contacto seleccionado
   useEffect(() => {
     if (selectedContact) {
-      handleMessages(selectedContact);
+      handleGetMessages(selectedContact);
     }
   }, [selectedContact]);
   useEffect(() => {
@@ -35,6 +47,48 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
       setLocalMsgs(msgsMore);
     }
   }, [msgsMore]);
+  // useEffect(() => {
+  //   console.log(localMsgs)
+  // }, [localMsgs])
+  useEffect(() => {
+    const el = messagesRef.current;
+
+    if (!el) return;
+
+    const isNearBottom =
+      el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+
+    if (isNearBottom || el.scrollTop == 0) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [localMsgs?.messages, loading]);
+
+  useEffect(() => {
+    const handleMessage = (data) => {
+      if (String(data.telefono) == String(selectedContactRef.current)) {
+
+        setLocalMsgs(prev => ({
+          ...prev,
+          messages: [
+            ...(prev?.messages || []),
+            {
+              role: data.role,
+              content: data.content,
+              created_at: new Date()
+            }
+          ]
+        }));
+      }
+    };
+    socket.on("nuevo_mensaje", handleMessage);
+    return () => {
+      socket.off("nuevo_mensaje", handleMessage);
+    };
+
+  }, []);
+  useEffect(() => {
+  selectedContactRef.current = selectedContact;
+}, [selectedContact]);
 
   // main min-height: 100vh position: relative
   // div position: absolute, top:50%, left:50%, transform traslate (-50%,-50%)
@@ -103,10 +157,11 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
     },
     messagesArea: {
       flex: 1,
+      height: '100%',
       overflowY: 'auto',
       padding: '24px',
       display: 'flex',
-      flexDirection: 'column-reverse',
+      flexDirection: 'column',
       gap: '16px'
     },
     bubble: (isModel) => ({
@@ -181,6 +236,7 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
               onClick={() => setSelectedContact(contact.whatsapp_number)}
               style={styles.contactItem(selectedContact === contact.whatsapp_number)}
             >
+              <p style={{ margin: 0, fontWeight: 600, color: '#6b7280'}}>{contact.nombre_usuario}</p>
               <p style={{ margin: 0, fontWeight: 600, color: "#272829" }}>+{contact.whatsapp_number}</p>
               <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 Ver conversación...
@@ -200,14 +256,21 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
             </div>
 
             {/* Área de Mensajes */}
-            <div style={styles.messagesArea}>
+            <div ref={messagesRef} style={styles.messagesArea}>
               {localMsgs?.messages?.map((msg, index) => {
                 const isModel = msg.role === 'model';
                 return (
                   <div key={index} style={styles.bubble(isModel)}>
                     <p style={{ margin: 0, fontSize: '14px' }}>{msg.content}</p>
                     <p style={styles.time}>
-                      {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {(() => {
+                      
+                        const dateStr = typeof msg.created_at === 'string' 
+                          ? msg.created_at.replace(' ', 'T') 
+                          : msg.created_at;
+                        return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      })()
+                      }
                     </p>
                   </div>
                 );
@@ -242,7 +305,12 @@ const WhatsAppAdmin = ({contacts, handleMessages, msgsMore, loading, sendMsg, Se
                     style={styles.input}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleBotState(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
                   />
                   
                   <button 

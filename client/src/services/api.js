@@ -1,24 +1,38 @@
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL
 
 const handleResponse = async (res) => {
+
+  if (res.status === 204) return null;
+
   if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error en la petición");
-  }
-  if (res.status === 204) {
-    return null; 
+    let errorMessage = "Error desconocido";
+    
+    try {
+      // JSON 
+      const errorData = await res.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (parseError) {
+      // texto plano o HTML
+      const textError = await res.text();
+      errorMessage = textError || `Código de error: ${res.status}`;
+    }
+
+    const error = new Error(errorMessage);
+    error.status = res.status;
+    throw error;
   }
   return res.json();
 };
 
 export const getAppointmentsByDay = (dia) =>
-    fetch(`${API_URL}/citas/dia/${dia}`).then(handleResponse);
+    fetch(`${API_URL}/citas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
     
 export const postUsuario = (data) => 
   fetch(`${API_URL}/usuarios`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    credentials: 'include'
   }).then(handleResponse);
 
 export const postCita = (data) => 
@@ -26,6 +40,7 @@ export const postCita = (data) =>
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    credentials: 'include'
   }).then(handleResponse);
 
 export const postFacturas = (lista) => 
@@ -33,6 +48,7 @@ export const postFacturas = (lista) =>
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lista),
+    credentials: 'include'
   }).then(handleResponse);
 
 export const putCitas = (lista) => 
@@ -40,16 +56,17 @@ export const putCitas = (lista) =>
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lista),
+    credentials: 'include'
   }).then(handleResponse);
 
 export const getFacturasMoreInfo = () => 
-  fetch(`${API_URL}/facturas/info`).then(handleResponse);
+  fetch(`${API_URL}/facturas/info`, {credentials: 'include'}).then(handleResponse);
 
 export const getHistoryNums = () =>
-  fetch(`${API_URL}/contacts`).then(handleResponse);
+  fetch(`${API_URL}/contacts`, {credentials: 'include'}).then(handleResponse);
 
 export const getMessByNum = (num) =>
-  fetch(`${API_URL}/messages/${num}`).then(handleResponse);
+  fetch(`${API_URL}/messages/${num}`, {credentials: 'include'}).then(handleResponse);
 
 export const postSendMessage = (from, msg) =>
   fetch(`${API_URL}/messages/send`, {
@@ -61,11 +78,21 @@ export const postSendMessage = (from, msg) =>
         "message": msg
       }
     ),
+    credentials: 'include'
   }).then(handleResponse);
   
 export const patchBotActive = (num,val) =>
   fetch(`${API_URL}/botactive/${num}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bot_active: val })
+        body: JSON.stringify({ bot_active: val }),
+        credentials: 'include'
     }).then(handleResponse);
+
+export const postLogin = (password) =>
+  fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+    credentials: 'include'
+    }).then(handleResponse);;

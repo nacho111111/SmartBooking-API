@@ -6,18 +6,20 @@ import Summary from "./components/Summary";
 import ListaCitasPorDia from "./components/AppointmentByDay"
 import { createAppointmentWithUser } from "./services/appointmentService";
 import { useAppointments } from "./hooks/useAppointments";
+import { useMessages } from "./hooks/useMessages";
 import UserModal from "./components/UserModal";
 import SalesViewer from "./components/SalesViewer";
 import FacturacionDashboard from "./components/LateralPanel";
 import WhatsAppAdmin from "./components/WhatsAppAdmin";
+import { loginManual } from "./utils/manualLogin";
 //import "./app.css";
 
 export default function App() {
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, contacts, handleGetMessByNum, msgsMore, handleSendMensagge, handleUpdateBotState, loading} = useAppointments(); // citas, factura, fetch
-  
+  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, loading} = useAppointments(); // citas, factura, fetch
+  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, handleUpdateBotState } = useMessages() // todo messages
   const [activeTab, setActiveTab] = useState('factura');
   // Función para cerrar el menú al elegir una opción
   const selectOption = (tab) => {
@@ -52,7 +54,7 @@ export default function App() {
             <button onClick={() => setShowForm(!showForm)}>
               + Agregar cliente
             </button>
-            {showForm && <ClientForm onAdd={handleAddAppointment} />}
+            {showForm && <ClientForm onAdd={handleAddAppointment} setShowForm={setShowForm} />}
           </div>
 
           <div className="right">
@@ -89,10 +91,10 @@ export default function App() {
         <div className="container" >
           <WhatsAppAdmin
           contacts={contacts}
-          handleMessages={handleGetMessByNum}
+          handleGetMessages={handleGetMessByNum}
           msgsMore={msgsMore}
           loading={loading}
-          sendMsg={handleSendMensagge}
+          sendMsg={handleSendMenssage}
           SetBotState={handleUpdateBotState}
           />
         </div>

@@ -6,14 +6,25 @@ import { hookCitaCal } from "../webhooks/calHandlers.js"
 import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
 import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
 import { getHistoryNumbers, getMessagesByNum, sendMessageManual } from "../controllers/history.controller.js"
+import { auth, cookieAuth } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.get("/usuarios", getUsers);
-router.post("/usuarios", createUser);
-router.get("/usuarios/:id",getUser);
+//webhooks
+//cal
+router.post("/webhooks/cal", hookCitaCal);
+//whatsapp
+router.get("/webhooks/whatsapp", whatsAppVerify);
+router.post("/webhooks/whatsapp", whatsAppAnswers);
+
+router.post("/api/login",auth)
+router.use(cookieAuth) // middleware
+
+router.get("/usuarios" ,getUsers);
+router.post("/usuarios" ,createUser);
+router.get("/usuarios/:id" ,getUser);
 router.delete("/usuarios/:id",deleteUser);
-router.put("/usuarios/:id", updateUser);
+router.put("/usuarios/:id" ,updateUser);
 
 //citas
 
@@ -37,13 +48,7 @@ router.post("/facturas", createFactura);
 router.delete("/facturas", deleteFactura);
 router.put("/facturas", updateFactura);
 
-//webhooks
-//cal
-router.post("/webhooks/cal", hookCitaCal);
 //whatsapp
-router.get("/webhooks/whatsapp", whatsAppVerify);
-router.post("/webhooks/whatsapp", whatsAppAnswers);
-
 router.post("/messages/send", sendMessageManual)
 
 //chat_history
@@ -52,17 +57,14 @@ router.get("/messages/:num", getMessagesByNum)
 
 router.patch("/botactive/:num", setBotActive)
 
-// import { pool } from "../db.js";
+import { pool } from "../db.js";
 
-// router.get("/histori", async(req,res) => {
-//     const { rows } = await pool.query(`
-//             SELECT * 
-//             FROM chat_history 
-             
-            
-//         `);
-//     res.json(rows);
-//     } 
-// )
+router.get("/histori", async(req,res) => {
+    const { rows } = await pool.query(`
+            SELECT * FROM chat_history 
+        `);
+    res.json(rows);
+    } 
+)
 
 export default router;

@@ -93,16 +93,24 @@ const actualizarLista = () => {
                 <input
                   type="number"
                   value={f.total_peluqueria}
-                  onChange={(e) => updateFactura(i, "total_peluqueria", e.target.value)}
-                  placeholder="0"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const numericValue = val === "" ? 0 : parseInt(val, 10);
+                    updateFactura(i, "total_peluqueria", numericValue)
+                  }}
+                  onFocus={(e) => {if (f.total_productos === 0) e.target.select()}}
                 />
               </td>
               <td>
                 <input
                   type="number"
                   value={f.total_productos}
-                  onChange={(e) => updateFactura(i, "total_productos", e.target.value)}
-                  placeholder="0"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const numericValue = val === "" ? 0 : parseInt(val, 10);
+                    updateFactura(i, "total_productos", numericValue)
+                  }}
+                  onFocus={(e) => {if (f.total_productos === 0) e.target.select()}}
                 />
               </td>
               <td><strong>${f.total_final}</strong></td>

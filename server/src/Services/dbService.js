@@ -40,6 +40,40 @@ export const setUser = async(num, name) => {
     return rows[0].id_usuario;
 }
 
+export const getCitasPorDia = async (dia) => {
+    const query = `
+        SELECT 
+            u.nombre_usuario, 
+            u.telefono, 
+            c.hora_atencion 
+        FROM citas c
+        INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+        WHERE c.hora_atencion::date = $1 
+    `;
+
+    const { rows } = await pool.query(query,[dia]);
+    return rows;
+};
+
+export const setBotsStatusByDate = async (dia, status) => {
+    const query = `
+        UPDATE usuarios 
+        SET bot_active = $2
+        WHERE id_usuario IN (
+            SELECT id_usuario 
+            FROM citas 
+            WHERE hora_atencion::date = $1
+        )
+    `;
+    try {
+        const { rowCount } = await pool.query(query, [dia, status]);
+        return { success: true };
+    } catch (error) {
+        console.error("Error al actualizar bots por fecha:", error);
+        throw error;
+    }
+};
+
 //export const getLastAnswerModelByNum = async (num) => {
 //    const query = `
 //    SELECT content 
