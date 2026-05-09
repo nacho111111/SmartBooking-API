@@ -48,7 +48,6 @@ const intents = {
 };
 
 async function isAnswer(last,t,num){
-
   switch(last){
     case RESPONSES.CAT_RES:
       if (intents.si.test(t)) {
@@ -57,7 +56,7 @@ async function isAnswer(last,t,num){
       }
       return "Entendí que no tomaremos una hora para tu gatito. Si tienes alguna otra consulta háblame cuando gustes"
 
-    case REM_RES:
+    case RESPONSES.REM_RES:
       if(/(si|bueno|ya|confirmo|confirmar|voy|listo)/.test(t)) return "Te esperamos"
       if(/(reagendar|cancelar|no|cambio)/.test(t)) return RESPONSES.CAN_RES
       
@@ -67,7 +66,7 @@ async function isAnswer(last,t,num){
         return "Esta bien, enviare una notificacion gracias por avisarnos, ¡saludos!"
       }
       if(/(no|perdon|equivoque|error)/.test(t)) return "Oh, entonces te esperamos, ¡saludos!"
-    case NOT_RES:
+    case RESPONSES.NOT_RES:
       if(intents.si.test(t)) {
         await notifyAlert("una persona quiere ayuda",num,t)
         return `Esta bien, enviare una notificacion y te hablaran a la brevedad, tambien puedes dejar la pregunta a este numero https://wa.me/${process.env.NUMPELU}`
