@@ -33,7 +33,7 @@ export async function handleMessage(t,hist,num) {
 
     // saveCache(text, aiResponse);
 
-    return NOT_RES;
+    return RESPONSES.NOT_RES;
 }
 
 const RESPONSES = {
@@ -82,7 +82,7 @@ function detectIntent(t) {
   if (/(precio|cuanto|vale|cuesta|monto)/.test(t)) return "price";
   if (/(hora|agenda|cita|reservar|atienden)/.test(t)) return "booking";
   if (/(direccion|donde)/.test(t)) return "addres";
-  if (/(hola|buenas)/.test(t)) return "greeting";
+  if (/(hola|buenas|hol|ola|hello)/.test(t)) return "greeting";
   if (/(contacto|hablar|persona|ejecutivo)/.test(t)) return "contact" ;
 
   return "unknown"; 
