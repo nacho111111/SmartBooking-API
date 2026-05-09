@@ -1,27 +1,28 @@
 const API_URL = import.meta.env.VITE_API_URL
 
 const handleResponse = async (res) => {
-
   if (res.status === 204) return null;
+
+  const bodyText = await res.text();
 
   if (!res.ok) {
     let errorMessage = "Error desconocido";
-    
     try {
-      // JSON 
-      const errorData = await res.json();
-      errorMessage = errorData.message || errorMessage;
+      const errorData = JSON.parse(bodyText);
+      errorMessage = errorData.message || errorData.error || errorMessage;
     } catch (parseError) {
-      // texto plano o HTML
-      const textError = await res.text();
-      errorMessage = textError || `Código de error: ${res.status}`;
+      errorMessage = bodyText || `Código de error: ${res.status}`;
     }
-
     const error = new Error(errorMessage);
     error.status = res.status;
     throw error;
   }
-  return res.json();
+
+  try {
+    return JSON.parse(bodyText);
+  } catch (e) {
+    return bodyText;
+  }
 };
 
 export const getAppointmentsByDay = (dia) =>
@@ -90,7 +91,7 @@ export const patchBotActive = (num,val) =>
     }).then(handleResponse);
 
 export const postLogin = (password) =>
-  fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+  fetch(`${API_URL}/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ password }),
