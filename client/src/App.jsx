@@ -15,12 +15,20 @@ import { loginManual } from "./utils/manualLogin";
 //import "./app.css";
 
 export default function App() {
+
+  if (!localStorage.getItem('isLogged')) {
+    return <p> falta log </p>;
+  }
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
   const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, loading} = useAppointments(); // citas, factura, fetch
   const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, handleUpdateBotState } = useMessages() // todo messages
   const [activeTab, setActiveTab] = useState('factura');
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  
   // Función para cerrar el menú al elegir una opción
   const selectOption = (tab) => {
     setActiveTab(tab);

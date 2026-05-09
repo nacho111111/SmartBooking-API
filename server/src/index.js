@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
-app.use(express.urlencoded({exteded: false}));
+app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(errorHandler);
 //routes

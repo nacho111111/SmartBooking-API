@@ -4,7 +4,8 @@ export const loginManual = async (password) => {
     try {
         const res = await postLogin(password)
         
-        if (res.ok) {
+        if (res.message) {
+            localStorage.setItem('isLogged', 'true')
             console.log("✅ Listo");
             window.location.reload()
         } else {

@@ -1,7 +1,10 @@
 export const auth = (req, res) => {
+  
   const { password } = req.body;
-  console.log(password+ "  " +process.env.PASS)
+  console.log(password)
+  console.log(process.env.PASS)
   if (password === process.env.PASS) {
+    
     res.cookie('auth_token', process.env.AUTH_TOKEN_VALUE, {
       httpOnly: true,   
       secure: true,    
