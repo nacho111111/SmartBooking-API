@@ -38,10 +38,11 @@ export const whatsAppAnswers = asyncHandler(async (req, res) => {
     }
     //  end soket
 
-    await saveMessage(num, 'user', text);
+    
 
     const active = await botActive(num,changes);
-
+    await saveMessage(num, 'user', text);
+    
     if (!active) return // si no esta activo, crea usuario si no existe
 
     const hist = await getChatHistory(num);
@@ -67,7 +68,7 @@ const answers = async (number) => {
     sendWhatsAppMessage(number, bodyResponse)
 };  
 
-async function botActive(num,changes){
+async function botActive(num,changes){ // crea el usuario si no existe
     const user = await getUserByNum(num);
     let id;
     if( !user ) {
