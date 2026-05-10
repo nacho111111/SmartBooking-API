@@ -24,7 +24,7 @@ console.log(`DB conectada en modo: ${isLocal ? 'LOCAL' : 'PRODUCCIÓN'}`);
 
 pool.on('connect', async (client) => {
     try {
-        await client.query("SET timezone = 'America/Santiago'");
+        //await client.query("SET timezone = 'America/Santiago'");
     } catch (err) {
         console.error('Error seteando la zona horaria:', err);
     }

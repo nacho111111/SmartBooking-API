@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { io } from "socket.io-client";
 
-const API_URL = import.meta.env.VITE_API_URL
-const socket = io(API_URL, { withCredentials: true });
-
-const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, SetBotState}) => {
-  const [selectedContact, setSelectedContact] = useState("");
-  const selectedContactRef = useRef(selectedContact); // para socket
+const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, setSelectedContact, selectedContact, handleBotState}) => {
+  
   const [newMessage, setNewMessage] = useState(""); // mensaje a enviar
-  const [localMsgs, setLocalMsgs] = useState(null);
   const messagesRef = useRef(null);
 
   // contacts = { whatsapp_number, numbre_usuario}
@@ -26,30 +20,18 @@ const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg,
     sendMsg(selectedContact, newMessage);
     // Limpiar el input después de enviar
     setNewMessage("");
-
   };
 
-  const handleBotState = async (val) =>{
-    SetBotState(selectedContact, val)
-    setLocalMsgs(prev => ({
-            ...prev,
-            bot_active: val
-        }));
-  }
   //Cargar mensajes cuando cambia el contacto seleccionado
   useEffect(() => {
     if (selectedContact) {
       handleGetMessages(selectedContact);
     }
   }, [selectedContact]);
-  useEffect(() => {
-    if (msgsMore) {
-      setLocalMsgs(msgsMore);
-    }
-  }, [msgsMore]);
   // useEffect(() => {
-  //   console.log(localMsgs)
-  // }, [localMsgs])
+  //   console.log(msgsMore)
+  // }, [msgsMore])
+
   useEffect(() => {
     const el = messagesRef.current;
 
@@ -61,34 +43,7 @@ const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg,
     if (isNearBottom || el.scrollTop == 0) {
       el.scrollTop = el.scrollHeight;
     }
-  }, [localMsgs?.messages, loading]);
-
-  useEffect(() => {
-    const handleMessage = (data) => {
-      if (String(data.telefono) == String(selectedContactRef.current)) {
-
-        setLocalMsgs(prev => ({
-          ...prev,
-          messages: [
-            ...(prev?.messages || []),
-            {
-              role: data.role,
-              content: data.content,
-              created_at: new Date()
-            }
-          ]
-        }));
-      }
-    };
-    socket.on("nuevo_mensaje", handleMessage);
-    return () => {
-      socket.off("nuevo_mensaje", handleMessage);
-    };
-
-  }, []);
-  useEffect(() => {
-  selectedContactRef.current = selectedContact;
-}, [selectedContact]);
+  }, [msgsMore?.messages, loading]);
 
   // main min-height: 100vh position: relative
   // div position: absolute, top:50%, left:50%, transform traslate (-50%,-50%)
@@ -257,7 +212,7 @@ const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg,
 
             {/* Área de Mensajes */}
             <div ref={messagesRef} style={styles.messagesArea}>
-              {localMsgs?.messages?.map((msg, index) => {
+              {msgsMore?.messages?.map((msg, index) => {
                 const isModel = msg.role === 'model';
                 return (
                   <div key={index} style={styles.bubble(isModel)}>
@@ -280,7 +235,7 @@ const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg,
 
             {/* --- NUEVA ÁREA DE INPUT --- */}
             <div style={styles.inputArea}>
-              {localMsgs.bot_active ? (
+              {msgsMore.bot_active ? (
                 /* ESTADO: TICKET CERRADO (BOT PRENDIDO) */
                 <button 
                   onClick={() => handleBotState(false)} 

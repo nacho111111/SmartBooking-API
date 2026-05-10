@@ -38,8 +38,6 @@ export const whatsAppAnswers = asyncHandler(async (req, res) => {
     }
     //  end soket
 
-    
-
     const active = await botActive(num,changes);
     await saveMessage(num, 'user', text);
 

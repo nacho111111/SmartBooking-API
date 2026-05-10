@@ -23,7 +23,7 @@ export default function App() {
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
 
   const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, loading} = useAppointments(); // citas, factura, fetch
-  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, handleUpdateBotState } = useMessages() // todo messages
+  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState} = useMessages() // todo messages
   const [activeTab, setActiveTab] = useState('factura');
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -103,7 +103,9 @@ export default function App() {
           msgsMore={msgsMore}
           loading={loading}
           sendMsg={handleSendMenssage}
-          SetBotState={handleUpdateBotState}
+          selectedContact={selectedContact}
+          setSelectedContact={setSelectedContact}
+          handleBotState={handleBotState}
           />
         </div>
 
