@@ -15,6 +15,11 @@ const app = express();
 const server = createServer(app);
 startDailyTasks();
 
+const whitelist = [
+  process.env.FRONTEND_URL, 
+  'https://cal.com',          // Si usas la versión oficial en la nube
+  'https://app.cal.com']
+  
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -25,7 +30,6 @@ const corsOptions = {
   },
   credentials: true
 };
-
 const io = new Server(server, {cors: corsOptions});
 
 io.on("connection", (socket) => {
