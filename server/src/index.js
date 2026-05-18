@@ -16,7 +16,13 @@ const server = createServer(app);
 startDailyTasks();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Bloqueado por políticas de CORS'));
+    }
+  },
   credentials: true
 };
 

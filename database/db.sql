@@ -57,7 +57,7 @@ CREATE TABLE mascotas (
     id_mascota SERIAL PRIMARY KEY,
     id_usuario INTEGER NOT NULL,
     nombre_mascota VARCHAR(100) NOT NULL,
-    descripcion TEXT,
+    notas TEXT,
     creado_el TIMESTAMP DEFAULT NOW(),
 
     CONSTRAINT fk_usuario 
