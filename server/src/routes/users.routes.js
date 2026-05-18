@@ -13,7 +13,7 @@ const router = Router();
 
 //webhooks
 //cal
-router.post("/webhooks/cal", hookCitaCal);
+router.post("/webhooks/cal", cors({ origin: '*' }),hookCitaCal);
 //whatsapp
 router.get("/webhooks/whatsapp", whatsAppVerify);
 router.post("/webhooks/whatsapp", whatsAppAnswers);
