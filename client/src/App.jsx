@@ -4,14 +4,18 @@ import AppointmentDetail from "./components/AppointmentDetail";
 import ClientForm from "./components/ClientForm";
 import Summary from "./components/Summary";
 import ListaCitasPorDia from "./components/AppointmentByDay"
-import { createAppointmentWithUser } from "./services/appointmentService";
 import { useAppointments } from "./hooks/useAppointments";
 import { useMessages } from "./hooks/useMessages";
+import { useMascotas } from "./hooks/useMascotas";
 import UserModal from "./components/UserModal";
+import MascotaModal from "./components/MascotaModal";
 import SalesViewer from "./components/SalesViewer";
-import FacturacionDashboard from "./components/LateralPanel";
+import MascotasViewer from "./components/MascotasViewer";
+import LateralPanel from "./components/LateralPanel";
 import WhatsAppAdmin from "./components/WhatsAppAdmin";
 import { loginManual } from "./utils/manualLogin";
+import { useAction } from "./context/ActionContext";
+
 //import "./app.css";
 
 export default function App() {
@@ -21,10 +25,14 @@ export default function App() {
   }
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
+  const [selectedMascota, setSelectedMascota] = useState(null); 
 
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo, loading} = useAppointments(); // citas, factura, fetch
-  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState} = useMessages() // todo messages
+  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo} = useAppointments(); // citas, factura, fetch
+  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState} = useMessages(); // todo messages
+  const { mascotasInfo, handleSetMascotasNotes, handleGetMascotasMoreInfo } = useMascotas();
   const [activeTab, setActiveTab] = useState('factura');
+
+  const { error, loading } = useAction();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -45,9 +53,10 @@ export default function App() {
   return (
     <>
     <div className="containerMain">
-      <FacturacionDashboard
+      <LateralPanel
         activeTab = {activeTab}
         options = {selectOption} 
+        getMascotas = {handleGetMascotasMoreInfo}
       />
       {activeTab === 'factura' && (  
         <div className="container">
@@ -92,6 +101,25 @@ export default function App() {
               data={FacturasInfo}
             />
           </div>
+        </div> 
+      )}
+      {activeTab === 'mascotas' && ( 
+        <div className="container" > 
+          <div style={{width:'50vw'}} className="left" >
+            <MascotasViewer
+            data={mascotasInfo}
+            getMascotas={handleGetMascotasMoreInfo}
+            loading={loading}
+            onSelectMascota={setSelectedMascota}
+            />
+          </div>
+          <MascotaModal 
+            mascota={selectedMascota} 
+            onClose={() => setSelectedMascota(null)} 
+            onUpdateNotes={handleSetMascotasNotes}
+          />
+
+
         </div> 
       )}
       {activeTab === 'whatsApp' && (

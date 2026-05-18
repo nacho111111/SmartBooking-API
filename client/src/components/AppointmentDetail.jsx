@@ -61,8 +61,8 @@ const actualizarLista = () => {
           <tr>
             <th>Asistió</th>
             <th>Peluquera </th>
-            <th>Servicio ($)</th>
-            <th>Productos ($)</th>
+            <th>Servicio($)</th>
+            <th>Productos($)</th>
             <th>Total</th>
             <th>Tipo Pago</th>
           </tr>

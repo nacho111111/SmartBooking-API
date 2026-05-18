@@ -21,7 +21,7 @@ export const createUser = asyncHandler(async (req, res) => {
     const query = `
         INSERT INTO usuarios (nombre_usuario, email, telefono) 
         VALUES ($1, $2, $3)
-        ON CONFLICT (telefono) DO UPDATE SET telefono = EXCLUDED.telefono
+        ON CONFLICT (telefono) DO UPDATE SET email = EXCLUDED.email
         RETURNING *;
     `;
     const { rows } = await pool.query(query, [nombre, email, telefono]);

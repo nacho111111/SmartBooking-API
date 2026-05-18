@@ -1,7 +1,7 @@
 
 import { getHistoryNums, getMessByNum, postSendMessage, patchBotActive} from "../services/api";
 import { useState, useEffect, useRef} from "react";
-import { useAction } from "./useAction";
+import { useAction } from "../context/ActionContext";
 import { io } from "socket.io-client";
 const API_URL = import.meta.env.VITE_API_URL
 const socket = io(API_URL, { withCredentials: true });
@@ -11,7 +11,7 @@ export const useMessages = () => {
     const [msgsMore, setmsgsMore] = useState([]); //msg wsp // lo setea handleGetMessByNum
     const [selectedContact, setSelectedContact] = useState("");
     const selectedContactRef = useRef(selectedContact); // para socket
-    const { loading, run, error } = useAction();
+    const { run } = useAction();
     
 
     useEffect(() => {

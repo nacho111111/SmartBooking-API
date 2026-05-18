@@ -28,16 +28,8 @@ const handleResponse = async (res) => {
 export const getAppointmentsByDay = (dia) =>
     fetch(`${API_URL}/citas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
     
-export const postUsuario = (data) => 
-  fetch(`${API_URL}/usuarios`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    credentials: 'include'
-  }).then(handleResponse);
-
-export const postCita = (data) => 
-  fetch(`${API_URL}/citas`, {
+export const postCitaFull = (data) => 
+  fetch(`${API_URL}/citas/full`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -62,6 +54,20 @@ export const putCitas = (lista) =>
 
 export const getFacturasMoreInfo = () => 
   fetch(`${API_URL}/facturas/info`, {credentials: 'include'}).then(handleResponse);
+
+
+export const patchMascotaNote = (id,note) =>
+  fetch(`${API_URL}/mascotas`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      {
+        "id": id,
+        "note": note
+      }
+    ),
+    credentials: 'include'
+  }).then(handleResponse);
 
 export const getHistoryNums = () =>
   fetch(`${API_URL}/contacts`, {credentials: 'include'}).then(handleResponse);
@@ -96,4 +102,16 @@ export const postLogin = (password) =>
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ password }),
     credentials: 'include'
-    }).then(handleResponse);;
+    }).then(handleResponse);
+
+export const getMascotasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {
+  const params = new URLSearchParams({
+  desde: desde.toString(),
+  hasta: hasta.toString(),
+  ...filtros // { nombre_mascota: 'Luna' } 
+  });
+
+  return fetch(`${API_URL}/mascotas?${params.toString()}`, {
+    credentials: 'include'
+    }).then(handleResponse);
+};

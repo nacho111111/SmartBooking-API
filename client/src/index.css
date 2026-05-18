@@ -297,6 +297,13 @@ button:active {
   align-items: center;
   flex-direction: row;
   }
+.column {
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  }
 
 li{
   list-style-type: none

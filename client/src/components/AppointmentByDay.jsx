@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada, appointmentsDay}) => {
   return (
     <div>
-        <div className="mb-4">
-            <label className="form-label">Filtrar por día:</label>
+        <h4 className="mb-4">Historial citas</h4>
+        <div style={{ display:'flex', justifyContent:'space-evenly',alignItems:'center' }} className="mb-4">
+            <label className="form-label">Filtrar por día: </label>
             <input 
             type="date" 
             className="form-control"

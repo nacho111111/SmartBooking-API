@@ -121,7 +121,7 @@ export const getFacturasMoreInfo = asyncHandler(async(req,res) =>{ // todas las 
         c.hora_atencion,
         c.asistio,
         c.peluquera,
-        c.nombre_mascota,
+        m.nombre_mascota,
         u.nombre_usuario,
         f.total_peluqueria,
         f.total_productos,
@@ -129,7 +129,8 @@ export const getFacturasMoreInfo = asyncHandler(async(req,res) =>{ // todas las 
         f.tipo_pago
     FROM facturas f
     JOIN citas c ON f.id_cita = c.id_cita
-    JOIN usuarios u ON c.id_usuario = u.id_usuario;`
+    JOIN usuarios u ON c.id_usuario = u.id_usuario
+    JOIN mascotas m ON m.id_mascota = c.id_mascota;`
 
     const { rows } = await pool.query(query);
     res.json(rows);

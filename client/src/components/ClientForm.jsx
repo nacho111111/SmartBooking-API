@@ -1,14 +1,13 @@
-import { useState, useRef} from "react";
+import { useState} from "react";
 
 export default function ClientForm({ onAdd ,setShowForm }) {
 
-  const formRef = useRef(null);
   const [form, setForm] = useState({
-    nombre: "",
+    nombre_usuario: "",
     email: "",
     telefono: "",
     fecha: "",
-    mascota: "",
+    nombre_mascota: "",
     descripcion: ""
   });
 
@@ -17,7 +16,6 @@ export default function ClientForm({ onAdd ,setShowForm }) {
 
   return (
     <form
-      ref={formRef}
       className="form"
       onSubmit={(e) => {
         e.preventDefault();
@@ -25,7 +23,7 @@ export default function ClientForm({ onAdd ,setShowForm }) {
         setShowForm(false);
       }}
     >
-      <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />
+      <input name="nombre_usuario" placeholder="Nombre" value={form.nombre_usuario} onChange={handleChange} />
       <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
       <input name="telefono" placeholder="Teléfono" value={form.telefono} onChange={handleChange} />
       
@@ -36,7 +34,7 @@ export default function ClientForm({ onAdd ,setShowForm }) {
         onChange={handleChange}
       />
 
-      <input name="mascota" placeholder="Mascota" value={form.mascota} onChange={handleChange} />
+      <input name="nombre_mascota" placeholder="Mascota" value={form.nombre_mascota} onChange={handleChange} />
       <input name="descripcion" placeholder="Descripcion" value={form.descripcion} onChange={handleChange} />
 
       <button type="submit">Guardar</button>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { createAppointmentWithUser } from "../services/appointmentService";
-import { getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo } from "../services/api";
-import { useAction } from "./useAction";
+import { postCitaFull, getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo } from "../services/api";
+import { useAction } from "../context/ActionContext";
 import { dailyClean } from "../utils/dailyClean"
 
 export const useAppointments = () => {
@@ -11,7 +10,7 @@ export const useAppointments = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
   const [FacturasInfo, setFacturasInfo] = useState([]); // facturas todo
   
-  const { loading, run, error } = useAction();
+  const { run } = useAction();
 
   useEffect(() => {
     let mounted = true;
@@ -42,7 +41,7 @@ export const useAppointments = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const organizarDatosParaGuardar = (listaOriginal) => {
+  const organizarDatosParaGuardar = (listaOriginal) => { // citas y facturas
     return listaOriginal.reduce(
       (acc, { id_cita, asistio, peluquera, id_usuario, tipo_pago, total_peluqueria, total_productos }) => {
 
@@ -59,15 +58,14 @@ export const useAppointments = () => {
 
   const handleAddAppointment = (form) => {
     run(async () => { 
-        //console.log(form);
-        const nuevaCita = await createAppointmentWithUser(form);
+        const nuevaCita = await postCitaFull(form);
         setAppointments((prev) => [...prev, nuevaCita]);
       },
       (error) => alert(error.message)
     )
   }
 
-  const handleSaveFacturas = (lista) => {
+  const handleSaveFacturas = (lista) => { // facuras y actualiza citas
     run (async () => { 
         const { listaCitas, listaFacturas } = organizarDatosParaGuardar(lista)
         await postFacturas(listaFacturas);
@@ -104,8 +102,6 @@ export const useAppointments = () => {
     fechaSeleccionada,
     setFechaSeleccionada,
     appointmentsDay,
-    FacturasInfo,
-    loading,
-    error,
+    FacturasInfo
   };
 };

@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 //import FacturasList from './FacturasList'; // El componente que creamos antes
 
-const FacturacionDashboard = ({ options , activeTab}) => {
+const LateralPanel = ({ options , activeTab, getMascotas}) => {
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const selectOption = (tab) => {
-        options(tab)
-        setIsSidebarOpen(false);
-    };
-    // --- ESTILOS EN LÍNEA (CSS-in-JS) ---
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const selectMascota = () => {
+    getMascotas(1 ,10 ,{})
+    selectOption("mascotas")
+  }
+
+  const selectOption = (tab) => {
+      options(tab)
+      setIsSidebarOpen(false);
+  };
+
   const styles = {
     dashboard: {
       display: 'flex',
@@ -136,7 +142,16 @@ const FacturacionDashboard = ({ options , activeTab}) => {
           onMouseEnter={(e) => activeTab !== 'filtros' && (e.target.style.backgroundColor = '#2c3e50')}
           onMouseLeave={(e) => activeTab !== 'filtros' && (e.target.style.backgroundColor = 'transparent')}
         >
-          <span style={{ fontSize: '20px' }}>🔍</span> Búsqueda Avanzada
+          <span style={{ fontSize: '20px' }}>🔍</span> Buscar Citas y Facturas
+        </button>
+
+        <button 
+          style={styles.sidebarBtn(activeTab === 'mascotas')}
+          onClick={() => selectOption("mascotas")}
+          onMouseEnter={(e) => activeTab !== 'mascotas' && (e.target.style.backgroundColor = '#2c3e50')}
+          onMouseLeave={(e) => activeTab !== 'mascotas' && (e.target.style.backgroundColor = 'transparent')}
+        >
+          <span style={{ fontSize: '20px' }}>🐶</span> Buscar Mascotas
         </button>
 
         <button 
@@ -168,4 +183,4 @@ const FacturacionDashboard = ({ options , activeTab}) => {
   );
 };
 
-export default FacturacionDashboard;
+export default LateralPanel;

@@ -38,10 +38,9 @@ const FacturasList = ({ data }) => {
   const itemsPaginados = filteredFacturas.slice(indicePrimerItem, indiceUltimoItem);
 
   return (
-    <div className="container-fluid">
+    <div>
       <h4 className="mb-4">Historial de Facturación</h4>
 
-      {/* --- FILTROS (Igual que antes) --- */}
       <div className="row mb-4">
         <div className="col-md-3">
           <label className="form-label">Fecha:</label>
