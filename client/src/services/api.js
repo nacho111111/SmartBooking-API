@@ -52,10 +52,6 @@ export const putCitas = (lista) =>
     credentials: 'include'
   }).then(handleResponse);
 
-export const getFacturasMoreInfo = () => 
-  fetch(`${API_URL}/facturas/info`, {credentials: 'include'}).then(handleResponse);
-
-
 export const patchMascotaNote = (id,note) =>
   fetch(`${API_URL}/mascotas`, {
     method: "PATCH",
@@ -103,6 +99,19 @@ export const postLogin = (password) =>
     body: JSON.stringify({ password }),
     credentials: 'include'
     }).then(handleResponse);
+
+export const getFacturasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {
+  const params = new URLSearchParams({
+  desde: desde.toString(),
+  hasta: hasta.toString(),
+  ...filtros
+  });
+
+  return fetch(`${API_URL}/facturas?${params.toString()}`, {
+    credentials: 'include'
+  }).then(handleResponse);
+
+}
 
 export const getMascotasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {
   const params = new URLSearchParams({

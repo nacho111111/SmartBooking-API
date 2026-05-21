@@ -135,3 +135,73 @@ export const getFacturasMoreInfo = asyncHandler(async(req,res) =>{ // todas las 
     const { rows } = await pool.query(query);
     res.json(rows);
 });
+
+export const getFacturasPaginadas = asyncHandler(async(req,res) =>{
+    const desde = parseInt(req.query.desde) || 1;
+    const hasta = parseInt(req.query.hasta) || 10;
+
+    const { hora_atencion, peluquera, nombre_usuario} = req.query; // filtros
+
+    const limit = Math.max(0, hasta - desde + 1);
+    const offset = Math.max(0, desde - 1);
+
+    // filtros dinámicos
+    const filters = [];
+    const params = [];
+
+    if (hora_atencion) {
+        params.push(hora_atencion); 
+        filters.push(`c.hora_atencion::date = $${params.length}`);
+    }
+
+    if (peluquera) {
+        params.push(`%${peluquera}%`);
+        filters.push(`c.peluquera ILIKE $${params.length}`);
+    }
+    if (nombre_usuario) {
+        params.push(`%${nombre_usuario}%`);
+        filters.push(`u.nombre_usuario ILIKE $${params.length}`);
+    }
+
+    // paginación
+    params.push(limit);
+    params.push(offset);
+
+    const query =`
+        SELECT 
+            c.hora_atencion,
+            c.asistio,
+            c.peluquera,
+            m.nombre_mascota,
+            u.nombre_usuario,
+            f.total_peluqueria,
+            f.total_productos,
+            f.total_final,
+            f.tipo_pago,
+            COUNT(*) OVER() AS total
+        FROM facturas f
+        JOIN citas c ON f.id_cita = c.id_cita
+        JOIN usuarios u ON c.id_usuario = u.id_usuario
+        JOIN mascotas m ON m.id_mascota = c.id_mascota
+        ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
+        ORDER BY c.asistio ASC
+        LIMIT $${params.length - 1}
+        OFFSET $${params.length}
+    ;`
+
+    const { rows } = await pool.query(query, params);
+    // extraer total 
+    const total = rows.length > 0
+        ? parseInt(rows[0].total)
+        : 0;
+
+    // quitar total de cada fila
+    const facturas = rows.map(({ total, ...m }) => m);
+
+    res.status(200).json({
+        total,
+        desde,
+        hasta,
+        facturas
+    });
+});

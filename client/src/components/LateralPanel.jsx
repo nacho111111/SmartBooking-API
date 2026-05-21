@@ -162,6 +162,15 @@ const LateralPanel = ({ options , activeTab, getMascotas}) => {
         >
           <span style={{ fontSize: '20px' }}>✅</span> WhatsApp
         </button>
+
+        <button 
+          style={styles.sidebarBtn(activeTab === 'others')}
+          onClick={() => selectOption('others')}
+          onMouseEnter={(e) => activeTab !== 'others' && (e.target.style.backgroundColor = '#2c3e50')}
+          onMouseLeave={(e) => activeTab !== 'others' && (e.target.style.backgroundColor = 'transparent')}
+        >
+          <span style={{ fontSize: '20px' }}>⚙️ </span> Otros
+        </button>
       </div>
 
       {/* Overlay para cerrar el menú haciendo clic fuera (opcional) */}

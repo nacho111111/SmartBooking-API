@@ -4,14 +4,16 @@ import { asyncHandler } from "../middlewares/asyncHandler.js";
 
 export const handleCreate = transactionHandler(async (req, res, client) =>{
   const infoCita = req.body.payload;
-
+  const fechaObjeto = new Date(infoCita.startTime).toLocaleString('sv-SE', { 
+  timeZone: 'America/Santiago' 
+  });
   // data cal
   const nuevaCita = {
   id_cal: infoCita.uid,
   nombre: infoCita.responses.name.value,
   email: infoCita.responses.email.value,
   telefono: infoCita.responses.attendeePhoneNumber.value.replace('+', ''),// quita el +
-  hora_atencion: infoCita.startTime,
+  hora_atencion: fechaObjeto,
   nombre_mascota: infoCita.responses.title?.value || "Sin nombre",
   descripcion: infoCita.responses.notes?.value || "Sin descripcion"
   };
@@ -62,12 +64,14 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
 
 export const handleReschedule = transactionHandler(async (req, res, client) => {
     const infoCita = req.body.payload;
-
+    const fechaObjeto = new Date(infoCita.startTime).toLocaleString('sv-SE', { 
+    timeZone: 'America/Santiago' 
+    });
     // data cal
     const nuevaCita = {
       id_cal: infoCita.uid,
       nombre: infoCita.responses.name.value,
-      hora_atencion: infoCita.startTime,
+      hora_atencion: fechaObjeto,
       nombre_mascota: infoCita.responses.title?.value || "Sin nombre",
       descripcion: infoCita.responses.notes?.value || "Sin descripcion"
     };

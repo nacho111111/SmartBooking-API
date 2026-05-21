@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { postCitaFull, getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo } from "../services/api";
 import { useAction } from "../context/ActionContext";
-import { dailyClean } from "../utils/dailyClean"
 
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState([]); // citas hoy, user + cita
@@ -33,12 +32,6 @@ export const useAppointments = () => {
 
   useEffect(() => {
     handleGetFacturasMoreInfo();
-  }, []);
-
-  useEffect(() => { // actualiza lista factura
-    dailyClean();
-    const interval = setInterval(dailyClean, 15 * 60 * 1000);
-    return () => clearInterval(interval);
   }, []);
 
   const organizarDatosParaGuardar = (listaOriginal) => { // citas y facturas
@@ -88,10 +81,10 @@ export const useAppointments = () => {
     (error) => alert(error.message)
     )   
   }
-  const handleGetFacturasMoreInfo = () => {
+  const handleGetFacturasMoreInfo = (desde, hasta, filtros) => {
     run(async () => {
-      const data = await getFacturasMoreInfo();
-      setFacturasInfo(Array.isArray(data) ? data : [])
+      const data = await getFacturasMoreInfo(desde, hasta, filtros);
+      setFacturasInfo(data)
     })
   }
  
@@ -102,6 +95,7 @@ export const useAppointments = () => {
     fechaSeleccionada,
     setFechaSeleccionada,
     appointmentsDay,
+    handleGetFacturasMoreInfo,
     FacturasInfo
   };
 };

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
   const [usuarioFiltro, setUsuarioFiltro] = useState('');
   const [mascotaFiltro, setMascotaFiltro] = useState('');
+  const [telefonoFiltro, setTelefonoFiltro] = useState('');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 10;
@@ -14,9 +15,10 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
   useEffect(() => {
     // mínimo 3 letras, o vacío para resetear
     const queryUsuarioValida = usuarioFiltro.length === 0 || usuarioFiltro.length >= 3;
+    const querytelefonoValida = telefonoFiltro.length === 0 || telefonoFiltro.length >= 3;
     const queryMascotaValida = mascotaFiltro.length === 0 || mascotaFiltro.length >= 3;
 
-    if (queryUsuarioValida && queryMascotaValida) {
+    if (queryUsuarioValida && querytelefonoValida && queryMascotaValida) {
       // rangos numéricos "desde" y "hasta" 
       const desde = (paginaActual - 1) * itemsPorPagina + 1;
       const hasta = paginaActual * itemsPorPagina;
@@ -24,12 +26,13 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
       // filtros req.query
       const filtros = {};
       if (usuarioFiltro.length >= 3) filtros.nombre_usuario = usuarioFiltro;
+      if (telefonoFiltro.length >= 3) filtros.telefono = telefonoFiltro;
       if (mascotaFiltro.length >= 3) filtros.nombre_mascota = mascotaFiltro;
 
       //fetch
       getMascotas(desde, hasta, filtros);
     }
-  }, [paginaActual, usuarioFiltro, mascotaFiltro]); 
+  }, [paginaActual, usuarioFiltro, telefonoFiltro, mascotaFiltro]); 
 
   // Handler para cambiar de página
   const handleSwapPage = (val) => {
@@ -43,7 +46,10 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
     setUsuarioFiltro(e.target.value);
     setPaginaActual(1);
   };
-
+  const handleTelefonoChange = (e) => {
+      setTelefonoFiltro(e.target.value);
+      setPaginaActual(1);
+  };
   const handleMascotaChange = (e) => {
     setMascotaFiltro(e.target.value);
     setPaginaActual(1);
@@ -68,6 +74,16 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
             placeholder="mín. 3 letras..."
             value={usuarioFiltro}
             onChange={handleUsuarioChange}
+          />
+        </div>
+        <div className="column col-md-4">
+          <label className="form-label">Telefono</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="mín. 3 letras..."
+            value={telefonoFiltro}
+            onChange={handleTelefonoChange}
           />
         </div>
         <div className="column col-md-4">
@@ -104,7 +120,6 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
               </td>
             </tr>
           ) : mascotas && mascotas.length > 0 ? (
-            /* Render de datos reales que vienen del backend */
             mascotas.map((m, i) => (
               <tr
                 key={m.id_mascota || i}

@@ -55,7 +55,7 @@ export const getMascotasPaginadas = asyncHandler(async (req, res) => {
     const desde = parseInt(req.query.desde) || 1;
     const hasta = parseInt(req.query.hasta) || 10;
 
-    const { nombre_mascota, nombre_usuario } = req.query;
+    const { nombre_mascota, nombre_usuario, telefono } = req.query; // filtros
 
     const limit = Math.max(0, hasta - desde + 1);
     const offset = Math.max(0, desde - 1);
@@ -72,6 +72,10 @@ export const getMascotasPaginadas = asyncHandler(async (req, res) => {
     if (nombre_usuario) {
         params.push(`%${nombre_usuario}%`);
         filters.push(`u.nombre_usuario ILIKE $${params.length}`);
+    }
+    if (telefono) {
+        params.push(`%${telefono}%`);
+        filters.push(`u.telefono ILIKE $${params.length}`);
     }
 
     // paginación

@@ -1,10 +1,9 @@
 :root {
-  /* Mismos nombres, ahora en escala de azules y oxigeno */
-  --cafe-crema: #e3f2fd;      /* Azul clarito casi blanco (antes crema) */
-  --cafe-light: #4a90e2;      /* Azul brillante (antes café claro) */
-  --cafe-medium: #326699;     /* Azul medio, el de tu gradiente (antes café medio) */
-  --cafe-dark: #274661;       /* Azul petróleo oscuro (antes café oscuro) */
-  --cafe-deep: #1a252f;       /* El gris-1 que pediste (antes café profundo) */
+  --cafe-crema: #e3f2fd;      
+  --cafe-light: #4a90e2;      
+  --cafe-medium: #326699;     
+  --cafe-dark: #274661;       
+  --cafe-deep: #1a252f;       
 
   /* Colores de Interfaz */
   --bg-main: #1a252f;         /* Fondo base (tu gris-1) */
@@ -31,7 +30,7 @@ body {
   background: var(--gradient-background)
 }
 
-/* --- ESTRUCTURA (Lo que estaba en App.css) --- */
+/* --- ESTRUCTURA --- */
 .containerMain{
   display: flex;
 }
@@ -71,14 +70,6 @@ body {
   width: 55vw;
 }
 
-/*
-.right { 
-
-  position: sticky; 
-  top: 20px; 
-} 
-*/
-
 /* --- ELEMENTOS GLOBALES --- */
 
 h1, h2, h3 {
@@ -86,7 +77,6 @@ h1, h2, h3 {
   margin-top: 0;
 }
 
-/* Tablas con estilo de madera oscura */
 .table-list, .table-form {
   width: 100%;
   /*display: block;*/
@@ -96,7 +86,7 @@ h1, h2, h3 {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  table-layout: fixed; /* OBLIGATORIO para que funcione el corte de texto */
+  table-layout: fixed;
   width: 100%;
 }
 
@@ -131,19 +121,15 @@ td:has(input,strong,select) {
   text-overflow: unset;
 }
 
-
 tr:hover td {
-  background-color: var(--bg-input); /* Resaltado al pasar el mouse */
+  background-color: var(--bg-input);
 }
+
 form{
   font-size: 30px;
   display: inline-block;
 }
-/*form:last-child{
-  margin-right: 60px;
-}*/
 
-/* Formularios Dark */
 input, select, textarea {
   background-color: var(--bg-input);
   border: 1px solid var(--border);
@@ -160,7 +146,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 
 input:focus {
   outline: 2px solid var(--cafe-light);
@@ -204,8 +189,36 @@ button:active {
 /* Resumen de facturación */
 .summary {
   margin-top: 25px;
-  padding-top: 20px;
   border-top: 2px dashed var(--cafe-dark);
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: space-around;
+}
+.summary-container {
+  border: 1px solid #2c3e50;
+  border-radius: 12px;
+  padding: 30px 60px;
+  box-shadow: 4px 4px 0px 4px #1a2835;
+  max-width: 350px;
+  margin: 10px 0;
+}
+.summary-h4 {
+  margin: 0 0 15px 0; 
+  text-align: center;
+  border-bottom: 1px solid var(--border);;
+  padding-bottom: 10px;
+}
+.summary-div-flex {
+  display: flex; 
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 0px 50px;
+}
+.flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* --- ESTILOS DEL MODAL (UserModal) --- */

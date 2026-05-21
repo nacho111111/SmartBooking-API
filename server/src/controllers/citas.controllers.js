@@ -68,7 +68,6 @@ export const updateCita = asyncHandler(async (req, res) => {
 
 // Obtener todas las citas de un usuario específico
 export const getCitasDeUsuario = asyncHandler(async (req, res) => { // revisar
-    
     const { id_usuario } = req.params;
     const { rows } = await pool.query(
         "SELECT * FROM citas WHERE id_usuario = $1 ORDER BY hora_atencion ASC", [id_usuario]);
@@ -171,6 +170,7 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
     const data = {
         id_cita: cita.id_cita,
         id_usuario: cita.id_usuario,
+        hora_atencion: cita.hora_atencion,
         descripcion: cita.descripcion,
         estado: cita.estado,
         nombre_mascota: mascota.nombre_mascota,

@@ -10,5 +10,7 @@ export const dailyClean = () => {
     localStorage.removeItem("facturacion_borrador");
     localStorage.setItem("ultima_limpieza_factura", HOY_STR);
     console.log("🧹 Borrador diario eliminado a las 5 AM");
+    return true;
   }
+  return false;
 };

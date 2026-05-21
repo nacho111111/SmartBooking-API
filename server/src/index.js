@@ -17,7 +17,7 @@ startDailyTasks();
 
 const whitelist = [
   process.env.FRONTEND_URL, 
-  'https://cal.com',          // Si usas la versión oficial en la nube
+  'https://cal.com',        
   'https://app.cal.com']
   
 const corsOptions = {

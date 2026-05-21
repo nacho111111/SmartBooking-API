@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
+import { useAppointments } from "./hooks/useAppointments";
+import { useMessages } from "./hooks/useMessages";
+import { useMascotas } from "./hooks/useMascotas";
+import { usePeluqueras } from "./hooks/usePeluqueras";
+import { useAction } from "./context/ActionContext";
+import { useSales} from "./hooks/useSales";
+import { loginManual } from "./utils/manualLogin";
+
 import AppointmentList from "./components/AppointmentList";
 import AppointmentDetail from "./components/AppointmentDetail";
 import ClientForm from "./components/ClientForm";
 import Summary from "./components/Summary";
 import ListaCitasPorDia from "./components/AppointmentByDay"
-import { useAppointments } from "./hooks/useAppointments";
-import { useMessages } from "./hooks/useMessages";
-import { useMascotas } from "./hooks/useMascotas";
 import UserModal from "./components/UserModal";
 import MascotaModal from "./components/MascotaModal";
 import SalesViewer from "./components/SalesViewer";
 import MascotasViewer from "./components/MascotasViewer";
 import LateralPanel from "./components/LateralPanel";
 import WhatsAppAdmin from "./components/WhatsAppAdmin";
-import { loginManual } from "./utils/manualLogin";
-import { useAction } from "./context/ActionContext";
+import AdminPeluqueras from "./components/AdminPeluqueras";
 
 //import "./app.css";
 
@@ -26,29 +30,21 @@ export default function App() {
   const [showForm, setShowForm] = useState(false);        // bool form de agregar cliente
   const [selectedUser, setSelectedUser] = useState(null); // estado selected para modal usuario
   const [selectedMascota, setSelectedMascota] = useState(null); 
-
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, FacturasInfo} = useAppointments(); // citas, factura, fetch
+  const [activeTab, setActiveTab] = useState('factura');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, handleGetFacturasMoreInfo, FacturasInfo} = useAppointments(); // citas, factura, fetch
   const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState} = useMessages(); // todo messages
   const { mascotasInfo, handleSetMascotasNotes, handleGetMascotasMoreInfo } = useMascotas();
-  const [activeTab, setActiveTab] = useState('factura');
-
+  const { salesList, setSalesList } = useSales();
+  const { listPeluqueras, handleAddPel, handleDeletePel } = usePeluqueras();
+  
   const { error, loading } = useAction();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  
   // Función para cerrar el menú al elegir una opción
   const selectOption = (tab) => {
     setActiveTab(tab);
   };
-
-  const [salesList, setSalesList] = useState(() => {
-    //localStorage.removeItem("facturacion_borrador");
-    const saved = localStorage.getItem("facturacion_borrador");
-    // Si hay datos guardados, usarlos
-    if (saved) return JSON.parse(saved);
-    return [];
-  });
 
   return (
     <>
@@ -80,9 +76,14 @@ export default function App() {
               onSaveAll={handleSaveFacturas}
               salesList={salesList}
               setSalesList={setSalesList}
+              peluqueras={listPeluqueras}
             />
-            <Summary salesList={salesList} />
+            <Summary 
+              salesList={salesList}
+              peluqueras={listPeluqueras} 
+            />
           </div>
+          
         </div>
       )}
       {activeTab === 'filtros' && ( 
@@ -99,6 +100,8 @@ export default function App() {
           <div className="right" >
             <SalesViewer
               data={FacturasInfo}
+              getFacturas={handleGetFacturasMoreInfo}
+              loading={loading}
             />
           </div>
         </div> 
@@ -118,8 +121,6 @@ export default function App() {
             onClose={() => setSelectedMascota(null)} 
             onUpdateNotes={handleSetMascotasNotes}
           />
-
-
         </div> 
       )}
       {activeTab === 'whatsApp' && (
@@ -137,6 +138,15 @@ export default function App() {
           />
         </div>
 
+      )}
+      {activeTab === 'others' && (
+        <div className="container">
+          <AdminPeluqueras
+          listPeluqueras={listPeluqueras}
+          addPeluquera={handleAddPel}
+          deletePeluquera={handleDeletePel}
+          />
+        </div>
       )}
       <UserModal 
         user={selectedUser} 
