@@ -31,10 +31,10 @@ const MascotaModal = ({ mascota, onClose, onUpdateNotes }) => {
         <div className="modal-content">
           <div className="mb-3">
             <p><strong>Nombre:</strong> {mascota.nombre_mascota}</p>
-            <p><strong>Propietario:</strong> {mascota.nombre_usuario}</p>
-            <p>
-              <strong>Teléfono:</strong> {mascota.telefono || 'No registrado'}
-            </p>
+            <p><strong>Tutor:</strong> {mascota.nombre_usuario}</p>
+            <p><strong>Teléfono:</strong> {mascota.telefono || 'No registrado'}</p>
+            <p><strong>Ultima Hora:</strong> {mascota.hora_atencion}</p>
+            <p><strong>Peluquera:</strong> {mascota.peluquera}</p>
           </div>
 
           <span className="modal-hint">

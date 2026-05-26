@@ -87,10 +87,19 @@ export const getMascotasPaginadas = asyncHandler(async (req, res) => {
             m.*,
             u.nombre_usuario,
             u.telefono,
+            c.hora_atencion,
+            c.peluquera,
             COUNT(*) OVER() AS total
         FROM mascotas m
         LEFT JOIN usuarios u 
             ON m.id_usuario = u.id_usuario
+        LEFT JOIN LATERAL (
+            SELECT hora_atencion, peluquera
+            FROM citas
+            WHERE id_mascota = m.id_mascota
+            ORDER BY hora_atencion DESC
+            LIMIT 1
+        ) c ON true
             ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
         ORDER BY m.id_mascota ASC
         LIMIT $${params.length - 1}

@@ -13,7 +13,7 @@ export const useMascotas = () => {
             setMascotasInfo(data)
         })
     }
-    const handleSetMascotasNotes= (id,note) => {
+    const handleSetMascotasNotes = (id,note) => {
         run(async () => {
         await patchMascotaNote(id,note);
         })

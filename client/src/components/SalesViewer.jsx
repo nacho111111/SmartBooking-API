@@ -4,6 +4,7 @@ const FacturasList = ({ data, getFacturas, loading}) => {
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [peluqueraFiltro, setPeluqueraFiltro] = useState('');
   const [usuarioFiltro, setusuarioFiltro] = useState('');
+  const [telefonoFiltro, setTelefonoFiltro] = useState('');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 10;
@@ -17,8 +18,9 @@ const FacturasList = ({ data, getFacturas, loading}) => {
     const queryFechaValida = fechaFiltro.length === 0 || fechaFiltro.length === 10;
     const queryPeluqueraValida = peluqueraFiltro.length === 0 || peluqueraFiltro.length >= 3;
     const queryUsuarioValida = usuarioFiltro.length === 0 || usuarioFiltro.length >= 3;
+    const queryTelefonoValida = telefonoFiltro.length === 0 || telefonoFiltro.length >= 3;
 
-    if ( queryFechaValida && queryPeluqueraValida && queryUsuarioValida) {
+    if ( queryFechaValida && queryPeluqueraValida && queryUsuarioValida && queryTelefonoValida) {
       // rangos numéricos "desde" y "hasta" 
       const desde = (paginaActual - 1) * itemsPorPagina + 1;
       const hasta = paginaActual * itemsPorPagina;
@@ -28,11 +30,12 @@ const FacturasList = ({ data, getFacturas, loading}) => {
       if (fechaFiltro.length === 10) filtros.hora_atencion = fechaFiltro;
       if (peluqueraFiltro.length >= 3) filtros.peluquera = peluqueraFiltro;
       if (usuarioFiltro.length >= 3) filtros.nombre_usuario = usuarioFiltro;
+      if (telefonoFiltro.length >= 3) filtros.telefono = telefonoFiltro;
 
       //fetch
       getFacturas(desde, hasta, filtros);
     }
-  }, [paginaActual, fechaFiltro, peluqueraFiltro, usuarioFiltro]); 
+  }, [paginaActual, fechaFiltro, peluqueraFiltro, usuarioFiltro, telefonoFiltro]); 
 
   const handleSwapPage = (val) => {
     const proxima = paginaActual + val;
@@ -51,6 +54,10 @@ const FacturasList = ({ data, getFacturas, loading}) => {
   };
   const handleUsuarioChange = (e) => {
     setUsuarioFiltro(e.target.value);
+    setPaginaActual(1);
+  };
+   const handleTelefonoChange = (e) => {
+    setTelefonoFiltro(e.target.value);
     setPaginaActual(1);
   };
 
@@ -90,6 +97,16 @@ const FacturasList = ({ data, getFacturas, loading}) => {
             onChange={handleUsuarioChange} 
           />
         </div>
+        <div className="col-md-3">
+          <label className="form-label">Telefono:</label>
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Buscar..." 
+            value={telefonoFiltro} 
+            onChange={handleTelefonoChange} 
+          />
+        </div>
       </div>
 
       {/* --- TABLA --- */}
@@ -98,8 +115,9 @@ const FacturasList = ({ data, getFacturas, loading}) => {
           <thead className="table-light">
             <tr>
               <th>Fecha/Hora</th>
-              <th>Usuario</th>
-              <th>Mascota</th>
+              <th>Tutor</th>
+              <th>Telefono</th>
+              <th>Perr/Gat</th>
               <th>Asistió</th>
               <th>Peluquera</th>
               <th>Peluqueria</th>
@@ -124,6 +142,7 @@ const FacturasList = ({ data, getFacturas, loading}) => {
                 <tr key={i}>
                   <td>{new Date(f.hora_atencion).toLocaleDateString('es-CL')}</td>
                   <td>{f.nombre_usuario}</td>
+                  <td>{f.telefono}</td>
                   <td>{f.nombre_mascota}</td>
                   <td>
                     {f.asistio === true && <span className="badge bg-success">Sí</span>}

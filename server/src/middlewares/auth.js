@@ -5,8 +5,8 @@ export const auth = (req, res) => {
     
     res.cookie('auth_token', process.env.AUTH_TOKEN_VALUE, {
       httpOnly: true,   
-      secure: true,    
-      sameSite: 'None', 
+      secure: process.env.NODE_ENV === 'production',    
+      sameSite: 'lax', 
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10
     });
     return res.json({ message: 'Autorizado' });
@@ -23,3 +23,12 @@ export const cookieAuth = (req, res, next) => {
     res.status(403).json({ error: 'No se ha autorizado este acceso' });
   }
 };
+
+export const isAuth = (req, res) => {
+  const token = req.cookies.auth_token;
+  if (token === process.env.AUTH_TOKEN_VALUE) {
+    res.status(200).json({ authorized: true });
+  } else {
+    res.status(200).json({ authorized: false });
+  }
+} 

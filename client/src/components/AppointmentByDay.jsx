@@ -20,7 +20,7 @@ const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada
             <tr>
                 <th>Nombre</th>
                 <th>Hora</th>
-                <th>Mascota</th>
+                <th>Perro/Gato</th>
                 <th>Descripción</th>
             </tr>
             </thead>

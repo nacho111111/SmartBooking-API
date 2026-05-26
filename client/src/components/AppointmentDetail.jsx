@@ -76,7 +76,8 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
           </tr>
         </thead>
         <tbody>
-          {salesList.map((f, i) => (
+          {appointments.length > 0 ? (
+          salesList.map((f, i) => (
             <tr key={f.id_cita}>
               <td>
                 <select 
@@ -133,7 +134,14 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
                 </select>
               </td>
             </tr>
-          ))}
+          ))
+          ) : (
+            <tr>
+            <td colSpan="4" className="text-center text-muted">
+                No hay facturas hoy.
+            </td>
+            </tr>
+            )}
         </tbody>
       </table>
 

@@ -102,9 +102,11 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
       <table className="table-list">
         <thead>
           <tr>
-            <th>Dueño</th>
+            <th>Tutor</th>
             <th>Teléfono</th>
-            <th>Mascota</th>
+            <th>Nombre</th>
+            <th>Ultima hora</th>
+            <th>Peluquera</th>
             <th>Notas</th>
           </tr>
         </thead>
@@ -129,6 +131,8 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
                 <td>{m.nombre_usuario}</td>
                 <td>{m.telefono}</td>
                 <td>{m.nombre_mascota}</td>
+                <td>{m.hora_atencion}</td>
+                <td>{m.peluquera}</td>
                 <td>{m.notas || 'Sin notas adicionales'}</td>
               </tr>
             ))

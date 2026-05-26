@@ -92,6 +92,9 @@ export const patchBotActive = (num,val) =>
         credentials: 'include'
     }).then(handleResponse);
 
+export const getAuth = () =>
+  fetch(`${API_URL}/api/login`, {credentials: 'include'}).then(handleResponse);
+
 export const postLogin = (password) =>
   fetch(`${API_URL}/api/login`, {
     method: 'POST',

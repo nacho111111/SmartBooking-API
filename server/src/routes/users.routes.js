@@ -7,7 +7,7 @@ import { hookCitaCal } from "../webhooks/calHandlers.js"
 import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
 import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
 import { getHistoryNumbers, getMessagesByNum, sendMessageManual } from "../controllers/history.controller.js"
-import { auth, cookieAuth } from "../middlewares/auth.js";
+import { auth, cookieAuth, isAuth} from "../middlewares/auth.js";
 import cors from 'cors';
 
 const router = Router();
@@ -19,7 +19,8 @@ router.post("/webhooks/cal",hookCitaCal);
 router.get("/webhooks/whatsapp", whatsAppVerify);
 router.post("/webhooks/whatsapp", whatsAppAnswers);
 
-router.post("/api/login",auth)
+router.get("/api/login",isAuth);
+router.post("/api/login",auth);
 router.use(cookieAuth) // middleware auth
 
 router.get("/usuarios" ,getUsers);

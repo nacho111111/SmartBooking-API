@@ -140,7 +140,7 @@ export const getFacturasPaginadas = asyncHandler(async(req,res) =>{
     const desde = parseInt(req.query.desde) || 1;
     const hasta = parseInt(req.query.hasta) || 10;
 
-    const { hora_atencion, peluquera, nombre_usuario} = req.query; // filtros
+    const { hora_atencion, peluquera, nombre_usuario, telefono} = req.query; // filtros
 
     const limit = Math.max(0, hasta - desde + 1);
     const offset = Math.max(0, desde - 1);
@@ -162,6 +162,10 @@ export const getFacturasPaginadas = asyncHandler(async(req,res) =>{
         params.push(`%${nombre_usuario}%`);
         filters.push(`u.nombre_usuario ILIKE $${params.length}`);
     }
+    if (telefono) {
+        params.push(`%${telefono}%`);
+        filters.push(`u.telefono ILIKE $${params.length}`);
+    }
 
     // paginación
     params.push(limit);
@@ -174,6 +178,7 @@ export const getFacturasPaginadas = asyncHandler(async(req,res) =>{
             c.peluquera,
             m.nombre_mascota,
             u.nombre_usuario,
+            u.telefono,
             f.total_peluqueria,
             f.total_productos,
             f.total_final,
