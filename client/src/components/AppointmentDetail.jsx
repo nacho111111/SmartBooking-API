@@ -137,7 +137,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
           ))
           ) : (
             <tr>
-            <td colSpan="4" className="text-center text-muted">
+            <td colSpan="6" className="text-center text-muted">
                 No hay facturas hoy.
             </td>
             </tr>

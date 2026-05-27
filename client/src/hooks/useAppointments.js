@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { postCitaFull, getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo } from "../services/api";
+import { postCitaFull, getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo, getResumeFacturas } from "../services/api";
 import { useAction } from "../context/ActionContext";
 
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState([]); // citas hoy, user + cita
   // selector day
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
-  const [FacturasInfo, setFacturasInfo] = useState([]); // facturas todo
+  const [facturasInfo, setFacturasInfo] = useState([]); // facturas todo
+  const [resumeFacturas, setResumeFactura] = useState("");
   
   const { run } = useAction();
 
@@ -24,14 +24,6 @@ export const useAppointments = () => {
       return () => {
         mounted = false;
       };
-  }, []);
-
-  useEffect(() => {
-    handleGetAppointmentsByDay(fechaSeleccionada);
-  }, [fechaSeleccionada]);
-
-  useEffect(() => {
-    handleGetFacturasMoreInfo();
   }, []);
 
   const organizarDatosParaGuardar = (listaOriginal) => { // citas y facturas
@@ -84,7 +76,14 @@ export const useAppointments = () => {
   const handleGetFacturasMoreInfo = (desde, hasta, filtros) => {
     run(async () => {
       const data = await getFacturasMoreInfo(desde, hasta, filtros);
-      setFacturasInfo(data)
+      setFacturasInfo(data);
+    })
+  }
+  const handleGetResumeFacturas = (mes, peluquera) => {
+    run(async () => {
+      if (!mes || !peluquera) return
+      const data = await getResumeFacturas(mes, peluquera);
+      setResumeFactura(data);
     })
   }
  
@@ -92,10 +91,11 @@ export const useAppointments = () => {
     appointments,
     handleAddAppointment,
     handleSaveFacturas,
-    fechaSeleccionada,
-    setFechaSeleccionada,
     appointmentsDay,
     handleGetFacturasMoreInfo,
-    FacturasInfo
+    facturasInfo,
+    handleGetAppointmentsByDay,
+    handleGetResumeFacturas,
+    resumeFacturas
   };
 };

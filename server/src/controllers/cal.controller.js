@@ -15,7 +15,8 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
   telefono: infoCita.responses.attendeePhoneNumber.value.replace('+', ''),// quita el +
   hora_atencion: fechaObjeto,
   nombre_mascota: infoCita.responses.title?.value || "Sin nombre",
-  descripcion: infoCita.responses.notes?.value || "Sin descripcion"
+  descripcion: infoCita.responses.notes?.value || "Sin descripcion",
+  tipo: infoCita.type === "solobano" ? "baño expres": null
   };
 
   // Busca o crea usuario
@@ -55,10 +56,10 @@ export const handleCreate = transactionHandler(async (req, res, client) =>{
   const idMascota = resMascota.rows[0].id_mascota;
 
   await client.query(`
-    INSERT INTO citas (id_usuario, hora_atencion, id_mascota, descripcion, id_cal) 
-    VALUES ($1, $2, $3, $4, $5) 
+    INSERT INTO citas (id_usuario, hora_atencion, id_mascota, descripcion, id_cal, tipo) 
+    VALUES ($1, $2, $3, $4, $5, $6) 
     ON CONFLICT (id_cal) DO NOTHING;`,
-    [ idUsuario, nuevaCita.hora_atencion, idMascota, nuevaCita.descripcion, nuevaCita.id_cal]
+    [ idUsuario, nuevaCita.hora_atencion, idMascota, nuevaCita.descripcion, nuevaCita.id_cal, nuevaCita.tipo]
   );
 })
 
@@ -84,7 +85,7 @@ export const handleReschedule = transactionHandler(async (req, res, client) => {
       AND c.descripcion = $3 
       AND c.hora_atencion > NOW()
       AND c.estado IS NULL
-      RETURNING c.id_usuario, c.id_mascota;`
+      RETURNING c.id_usuario, c.id_mascota, c.tipo`
 
     let { rows } = await client.query(query,
     [ "REAGENDADA", nuevaCita.nombre_mascota, nuevaCita.descripcion ]);
@@ -94,8 +95,8 @@ export const handleReschedule = transactionHandler(async (req, res, client) => {
       return res.status(500);
     }
     await client.query(
-        "INSERT INTO citas (id_usuario, hora_atencion, id_mascota, descripcion, id_cal) VALUES ($1, $2, $3, $4, $5);",
-        [ rows[0].id_usuario, nuevaCita.hora_atencion, rows[0].id_mascota, nuevaCita.descripcion, nuevaCita.id_cal]
+        "INSERT INTO citas (id_usuario, hora_atencion, id_mascota, descripcion, id_cal, tipo) VALUES ($1, $2, $3, $4, $5, $6);",
+        [ rows[0].id_usuario, nuevaCita.hora_atencion, rows[0].id_mascota, nuevaCita.descripcion, nuevaCita.id_cal, rows[0].tipo]
     );
     res.status(200);
 });

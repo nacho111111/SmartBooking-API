@@ -7,6 +7,7 @@ export default function AppointmentList({ appointments, onSelectUser }) {
           <th>Fecha</th>
           <th>Perro/Gato</th>
           <th>descripcion</th>
+          <th>tipo</th>
         </tr>
       </thead>
       <tbody>
@@ -27,11 +28,12 @@ export default function AppointmentList({ appointments, onSelectUser }) {
               </td>
               <td>{a.nombre_mascota}</td>
               <td>{a.descripcion}</td>
+              <td>{a.tipo}</td>
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan="4" className="text-center text-muted">
+            <td colSpan="5" className="text-center text-muted">
                 No hay citas hoy.
             </td>
           </tr>

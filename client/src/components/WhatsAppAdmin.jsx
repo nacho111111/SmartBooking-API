@@ -1,22 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, setSelectedContact, selectedContact, handleBotState}) => {
+const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, setSelectedContact, selectedContact, handleBotState, handleGetHistNums}) => {
   
   const [newMessage, setNewMessage] = useState(""); // mensaje a enviar
   const messagesRef = useRef(null);
 
-  // contacts = { whatsapp_number, numbre_usuario}
-  // msgMore = {
-  //  nombre_usuario, bot_active, telefono, 
-  //  messages:[
-  //      {role, content, create_at},{role, content, create_at},...
-  //  ]
-  //}
+  useEffect(() => {
+    handleGetHistNums();
+  }, []);
  
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     
-    //console.log(`Enviando a ${selectedContact}: ${newMessage}`);
     sendMsg(selectedContact, newMessage);
     // Limpiar el input después de enviar
     setNewMessage("");

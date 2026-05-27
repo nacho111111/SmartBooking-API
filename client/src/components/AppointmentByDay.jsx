@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 
-const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada, appointmentsDay}) => {
-  return (
+const ListaCitasPorDia = ({onSelectUser, appointmentsDay, handleGetByDay}) => {
+     const [fechaSeleccionada, setFechaSeleccionada] = useState('');
+
+    const handleSelectFecha = (e) => { 
+        const nuevaFecha = e.target.value;
+        setFechaSeleccionada(nuevaFecha); 
+        handleGetByDay(nuevaFecha);
+    }
+    return (
     <div>
         <h4 className="mb-4">Historial citas</h4>
         <div style={{ display:'flex', justifyContent:'space-evenly',alignItems:'center' }} className="mb-4">
             <label className="form-label">Filtrar por día: </label>
-            <input 
-            type="date" 
-            className="form-control"
-            value={fechaSeleccionada} 
-            onChange={(e) => setFechaSeleccionada(e.target.value)}
-            style={{ maxWidth: '200px' }}
-            />
+                <input 
+                type="date" 
+                className="form-control"
+                value={fechaSeleccionada} 
+                onChange={handleSelectFecha}
+                style={{ maxWidth: '200px' }}
+                />
         </div>
 
         <table className="table-list">
@@ -22,6 +29,7 @@ const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada
                 <th>Hora</th>
                 <th>Perro/Gato</th>
                 <th>Descripción</th>
+                <th>Tipo</th>
             </tr>
             </thead>
             <tbody>
@@ -42,11 +50,12 @@ const ListaCitasPorDia = ({onSelectUser, fechaSeleccionada, setFechaSeleccionada
                     </td>
                     <td>{a.nombre_mascota}</td>
                     <td>{a.descripcion}</td>
+                    <td>{a.tipo}</td>
                 </tr>
                 ))
             ) : (
                 <tr>
-                <td colSpan="4" className="text-center text-muted">
+                <td colSpan="5" className="text-center text-muted">
                     No hay citas para este día.
                 </td>
                 </tr>

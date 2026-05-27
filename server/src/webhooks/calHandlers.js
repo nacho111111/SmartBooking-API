@@ -5,6 +5,7 @@ import { handleCreate, handleReschedule, handleCancel } from "../controllers/cal
 export const hookCitaCal = asyncHandler(async (req, res, next) => {
   res.status(200).json({ received: true });
   const payload = req.body;
+  console.log("cal")
   // Cal.com evento
   if (payload.triggerEvent === "BOOKING_CREATED") {
     return await handleCreate(req,res,next);

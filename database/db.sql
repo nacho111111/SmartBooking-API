@@ -24,6 +24,7 @@ CREATE TABLE citas (
     estado VARCHAR(255),
     peluquera VARCHAR(255),
     asistio BOOLEAN,
+    tipo VARCHAR(255),
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     CONSTRAINT fk_mascota_cita FOREIGN KEY (id_mascota) REFERENCES mascotas(id_mascota) ON DELETE CASCADE;
 );

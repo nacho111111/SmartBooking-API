@@ -127,3 +127,13 @@ export const getMascotasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {
     credentials: 'include'
     }).then(handleResponse);
 };
+
+export const getResumeFacturas = (mes, peluquera) => {
+  const params = new URLSearchParams({
+    mes: mes.toString(),
+    peluquera: peluquera.toString()
+  })
+  return fetch(`${API_URL}/facturas/resume?${params.toString()}`, {
+    credentials: 'include'
+    }).then(handleResponse);
+};

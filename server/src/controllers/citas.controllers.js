@@ -87,7 +87,8 @@ export const getCitasPorDia = asyncHandler(async (req, res) => {
         c.hora_atencion, 
         m.nombre_mascota, 
         c.descripcion,  
-        c.estado
+        c.estado,
+        c.tipo
     FROM citas c
     INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
     INNER JOIN mascotas m ON c.id_mascota = m.id_mascota

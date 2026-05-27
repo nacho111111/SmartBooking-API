@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-const FacturasList = ({ data, getFacturas, loading}) => {
+const FacturasList = ({ data, handleGetFacturas, loading}) => {
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [peluqueraFiltro, setPeluqueraFiltro] = useState('');
-  const [usuarioFiltro, setusuarioFiltro] = useState('');
+  const [usuarioFiltro, setUsuarioFiltro] = useState('');
   const [telefonoFiltro, setTelefonoFiltro] = useState('');
+  const [mascotaFiltro, setMascotaFiltro] = useState('');
 
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 10;
@@ -19,8 +20,9 @@ const FacturasList = ({ data, getFacturas, loading}) => {
     const queryPeluqueraValida = peluqueraFiltro.length === 0 || peluqueraFiltro.length >= 3;
     const queryUsuarioValida = usuarioFiltro.length === 0 || usuarioFiltro.length >= 3;
     const queryTelefonoValida = telefonoFiltro.length === 0 || telefonoFiltro.length >= 3;
+    const queryMascotaValida = mascotaFiltro.length === 0 || mascotaFiltro.length >= 3;
 
-    if ( queryFechaValida && queryPeluqueraValida && queryUsuarioValida && queryTelefonoValida) {
+    if ( queryFechaValida && queryPeluqueraValida && queryUsuarioValida && queryTelefonoValida && queryMascotaValida) {
       // rangos numéricos "desde" y "hasta" 
       const desde = (paginaActual - 1) * itemsPorPagina + 1;
       const hasta = paginaActual * itemsPorPagina;
@@ -31,11 +33,12 @@ const FacturasList = ({ data, getFacturas, loading}) => {
       if (peluqueraFiltro.length >= 3) filtros.peluquera = peluqueraFiltro;
       if (usuarioFiltro.length >= 3) filtros.nombre_usuario = usuarioFiltro;
       if (telefonoFiltro.length >= 3) filtros.telefono = telefonoFiltro;
+      if (mascotaFiltro.length >= 3) filtros.mascota = mascotaFiltro;
 
       //fetch
-      getFacturas(desde, hasta, filtros);
+      handleGetFacturas(desde, hasta, filtros);
     }
-  }, [paginaActual, fechaFiltro, peluqueraFiltro, usuarioFiltro, telefonoFiltro]); 
+  }, [paginaActual, fechaFiltro, peluqueraFiltro, usuarioFiltro, telefonoFiltro, mascotaFiltro]); 
 
   const handleSwapPage = (val) => {
     const proxima = paginaActual + val;
@@ -56,8 +59,12 @@ const FacturasList = ({ data, getFacturas, loading}) => {
     setUsuarioFiltro(e.target.value);
     setPaginaActual(1);
   };
-   const handleTelefonoChange = (e) => {
+  const handleTelefonoChange = (e) => {
     setTelefonoFiltro(e.target.value);
+    setPaginaActual(1);
+  };
+  const handleMascotaChange = (e) => {
+    setMascotaFiltro(e.target.value);
     setPaginaActual(1);
   };
 
@@ -88,13 +95,13 @@ const FacturasList = ({ data, getFacturas, loading}) => {
           />
         </div>
         <div className="col-md-3">
-          <label className="form-label">Usuario:</label>
+          <label className="form-label">Perr/Gat:</label>
           <input 
             type="text" 
             className="form-control" 
             placeholder="Buscar..." 
-            value={usuarioFiltro} 
-            onChange={handleUsuarioChange} 
+            value={mascotaFiltro} 
+            onChange={handleMascotaChange} 
           />
         </div>
         <div className="col-md-3">

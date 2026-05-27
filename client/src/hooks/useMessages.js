@@ -13,11 +13,6 @@ export const useMessages = () => {
     const selectedContactRef = useRef(selectedContact); // para socket
     const { run } = useAction();
     
-
-    useEffect(() => {
-        handleGetHistNums();
-      }, []);
-
     const handleGetHistNums = () => {
         run(async () => {
             const data = await getHistoryNums();
@@ -33,7 +28,7 @@ export const useMessages = () => {
     // mensajes que salen a usuario
     const handleSendMenssage = (from,msg) => {
         run(async ()=> {
-            setmsgsMore(prev => ({
+            setmsgsMore(prev => ({ // actualiza la lista local y manda msg
                 ...prev, 
                 messages: [
                 ...prev.messages, 
@@ -92,6 +87,7 @@ export const useMessages = () => {
         handleSendMenssage,
         selectedContact, 
         setSelectedContact,
-        handleBotState
+        handleBotState,
+        handleGetHistNums
     };
 }

@@ -5,11 +5,6 @@ const LateralPanel = ({ options , activeTab, getMascotas}) => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const selectMascota = () => {
-    getMascotas(1 ,10 ,{})
-    selectOption("mascotas")
-  }
-
   const selectOption = (tab) => {
       options(tab)
       setIsSidebarOpen(false);
@@ -164,12 +159,21 @@ const LateralPanel = ({ options , activeTab, getMascotas}) => {
         </button>
 
         <button 
+          style={styles.sidebarBtn(activeTab === 'resume')}
+          onClick={() => selectOption('resume')}
+          onMouseEnter={(e) => activeTab !== 'resume' && (e.target.style.backgroundColor = '#2c3e50')}
+          onMouseLeave={(e) => activeTab !== 'resume' && (e.target.style.backgroundColor = 'transparent')}
+        >
+          <span style={{ fontSize: '20px' }}>📋</span> Resumen
+        </button>
+
+        <button 
           style={styles.sidebarBtn(activeTab === 'others')}
           onClick={() => selectOption('others')}
           onMouseEnter={(e) => activeTab !== 'others' && (e.target.style.backgroundColor = '#2c3e50')}
           onMouseLeave={(e) => activeTab !== 'others' && (e.target.style.backgroundColor = 'transparent')}
         >
-          <span style={{ fontSize: '20px' }}>⚙️ </span> Otros
+          <span style={{ fontSize: '20px' }}>⚙️</span> Otros
         </button>
       </div>
 

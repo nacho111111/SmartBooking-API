@@ -18,6 +18,7 @@ import MascotasViewer from "./components/MascotasViewer";
 import LateralPanel from "./components/LateralPanel";
 import WhatsAppAdmin from "./components/WhatsAppAdmin";
 import AdminPeluqueras from "./components/AdminPeluqueras";
+import SummaryMonth from "./components/SummaryMonth";
 
 
 export default function Dashboard() {
@@ -26,8 +27,8 @@ export default function Dashboard() {
   const [selectedMascota, setSelectedMascota] = useState(null); 
   const [activeTab, setActiveTab] = useState('factura');
   
-  const { appointments, handleAddAppointment, handleSaveFacturas, fechaSeleccionada, setFechaSeleccionada, appointmentsDay, handleGetFacturasMoreInfo, FacturasInfo} = useAppointments(); // citas, factura, fetch
-  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState} = useMessages(); // todo messages
+  const { appointments, handleAddAppointment, handleSaveFacturas, appointmentsDay, handleGetAppointmentsByDay, handleGetFacturasMoreInfo, facturasInfo, handleGetResumeFacturas, resumeFacturas} = useAppointments(); // citas, factura, fetch
+  const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState, handleGetHistNums} = useMessages(); // todo messages
   const { mascotasInfo, handleSetMascotasNotes, handleGetMascotasMoreInfo } = useMascotas();
   const { salesList, setSalesList } = useSales();
   const { listPeluqueras, handleAddPel, handleDeletePel } = usePeluqueras();
@@ -83,16 +84,15 @@ export default function Dashboard() {
           <div className="left" >
             <ListaCitasPorDia
             onSelectUser={setSelectedUser}
-            fechaSeleccionada={fechaSeleccionada}
-            setFechaSeleccionada={setFechaSeleccionada}
             appointmentsDay={appointmentsDay}
+            handleGetByDay={handleGetAppointmentsByDay}
             />
           </div>
 
           <div className="right" >
             <SalesViewer
-              data={FacturasInfo}
-              getFacturas={handleGetFacturasMoreInfo}
+              data={facturasInfo}
+              handleGetFacturas={handleGetFacturasMoreInfo}
               loading={loading}
             />
           </div>
@@ -127,9 +127,21 @@ export default function Dashboard() {
           selectedContact={selectedContact}
           setSelectedContact={setSelectedContact}
           handleBotState={handleBotState}
+          handleGetHistNums={handleGetHistNums}
           />
         </div>
 
+      )}
+      {activeTab === 'resume' && (
+        <div className="container">
+          <div style={{width:'50vw'}} className="left">
+            <SummaryMonth
+            facturas = {resumeFacturas}
+            handleGetResume = {handleGetResumeFacturas}
+            peluqueras={listPeluqueras}
+            />
+          </div>
+        </div>
       )}
       {activeTab === 'others' && (
         <div className="container">

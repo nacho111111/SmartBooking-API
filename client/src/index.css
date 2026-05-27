@@ -200,7 +200,7 @@ button:active {
   border-radius: 12px;
   padding: 30px 60px;
   box-shadow: 4px 4px 0px 4px #1a2835;
-  max-width: 350px;
+  /*max-width: 350px;*/
   margin: 10px 0;
 }
 .summary-h4 {
@@ -219,6 +219,29 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* summary month */
+
+.summary-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 20px;
+  width: 100%;
+}
+
+.grid-col-span-2 {
+  grid-column: span 2;
+}
+
+/* Opcional: Hace que en pantallas muy chicas (celulares) el 2x2 pase a ser una sola columna */
+@media (max-width: 768px) {
+  .summary-grid-2x2 {
+    grid-template-columns: 1fr;
+  }
+  .grid-col-span-2 {
+    grid-column: span 1;
+  }
 }
 
 /* --- ESTILOS DEL MODAL (UserModal) --- */
