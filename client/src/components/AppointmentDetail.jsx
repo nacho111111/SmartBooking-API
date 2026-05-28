@@ -29,7 +29,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
 
         const nuevasFacturas = nuevasCitas.map((cita) => ({
           asistio: true,
-          peluquera: peluqueras?[0] || "Sin asignar",
+          peluquera: peluqueras?.[0] || "Sin asignar",
           id_cita: cita.id_cita,
           id_usuario: cita.id_usuario,
           total_peluqueria: 0,
