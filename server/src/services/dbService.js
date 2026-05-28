@@ -49,6 +49,7 @@ export const getCitasPorDia = async (dia) => {
         FROM citas c
         INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
         WHERE c.hora_atencion::date = $1 
+        AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)
     `;
 
     const { rows } = await pool.query(query,[dia]);
