@@ -30,7 +30,7 @@ export const startDailyTasks = () => {
 
             if (data && data.length > 0) {
                 console.log(`Se encontraron ${data.length} citas para hoy.`);
-                sendMenssages(data)
+                await sendMenssages(data)
             } else {
                 console.log('No hay citas programadas para hoy.');
             }
@@ -45,9 +45,9 @@ export const startDailyTasks = () => {
 };
 
 async function sendMenssages(data){
-    data.map((a) => {
+    for (const a of data) {
         await whatsAppReminder(a.telefono, a.nombre_usuario, a.hora_atencion);
         await saveMessage(a.telefono, "model", "Recordatorio automatico");
-    })
+    }
 }
 
