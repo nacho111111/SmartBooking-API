@@ -93,7 +93,7 @@ export const getCitasPorDia = asyncHandler(async (req, res) => {
     INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
     INNER JOIN mascotas m ON c.id_mascota = m.id_mascota
     WHERE c.hora_atencion::date = $1 
-      AND (c.estado NOT IN ('CANCELADA', 'REAGENDADA') OR c.estado IS NULL)
+      AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)
     ORDER BY c.hora_atencion ASC
 `;
     const { rows } = await pool.query(query,[dia]);
