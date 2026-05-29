@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { dailyClean } from "../utils/dailyClean"
-
+import { getFacturasByDay } from "../services/api";
 export const useSales = () => {
 
     const [salesList, setSalesList] = useState(() => {
@@ -9,6 +9,25 @@ export const useSales = () => {
         if (saved) return JSON.parse(saved);
         return [];
     });
+    useEffect(() => {// no hay local, pide a db
+        const getFacturas = async () => {
+            if (salesList.length === 0) {
+                try {
+                    const hoy = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0];
+                    const facturasDB = await getFacturasByDay(hoy);
+                    
+                    if (facturasDB && facturasDB.length > 0) {
+                        setSalesList(facturasDB);
+                    }
+                } catch (error) {
+                    console.error("Error get facturas de la DB:", error);
+                }
+            }
+        };
+        getFacturas();
+    }, []); 
 
     useEffect(() => {
         if (salesList.length > 0) {

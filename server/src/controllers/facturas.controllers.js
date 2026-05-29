@@ -213,6 +213,28 @@ export const getFacturasPaginadas = asyncHandler(async(req,res) =>{
         facturas
     });
 });
+// id_cita, id_usuario, total_peluqueria, total_productos, tipo_pago
+export const getFacturasPorDia = asyncHandler(async (req, res) => {
+    const { dia } = req.params;
+    const query = `
+    SELECT 
+        c.id_cita,
+        u.id_usuario,
+        f.total_peluqueria,
+        f.total_productos,
+        f.tipo_pago,
+        c.asistio,
+        c.peluquera
+    FROM citas c
+    INNER JOIN usuarios u ON u.id_usuario = c.id_usuario
+    INNER JOIN facturas f ON f.id_cita = c.id_cita
+    WHERE c.hora_atencion::date = $1 
+      AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)
+    ORDER BY c.hora_atencion ASC
+`;
+    const { rows } = await pool.query(query,[dia]);
+    res.json(rows);
+});
 
 export const getResumenMensualPeluquera = asyncHandler(async (req, res) => { 
 

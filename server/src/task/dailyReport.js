@@ -3,7 +3,7 @@ import { getCitasPorDia, setBotsStatusByDate } from "../Services/dbService.js";
 import { whatsAppReminder } from "../webhooks/whatsAppReminder.js";
 import { saveMessage } from "../models/ChatHistory.js";
 
-export const startDailyTasks = () => {
+export const startDailyTasks = () => { // fix no solo las del dia 
     cron.schedule('0 22 * * 3-6', async () => {
         try {
             const hoy = new Date().toISOString().split('T')[0];

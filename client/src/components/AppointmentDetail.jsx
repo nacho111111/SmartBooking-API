@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 
 export default function AppointmentDetail({ appointments , onSaveAll, salesList, setSalesList, peluqueras}) {
   
+  const idsExistentes = new Set(appointments.map(f => f.id_cita));
+
   const actualizarLista = () => {
-    if (appointments.length === 0) {
+    if (!appointments || appointments.length === 0) {
       return;
     }
-    const idsExistentes = new Set(appointments.map(f => f.id_cita));
-
+    
     setSalesList(prevList => {
-      const ventasFiltradas = prevList.filter(
+      const listaSegura = Array.isArray(prevList) ? prevList : [];
+
+      const ventasFiltradas = listaSegura.filter(
         factura => idsExistentes.has(factura.id_cita)
       );
 
@@ -20,13 +23,18 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
       const nuevasCitas = appointments.filter(
         cita => !idsExistentesEnVentas.has(cita.id_cita)
       );
+      const ordenIdsCorrecto = appointments.map(c => c.id_cita);
 
-      if (nuevasCitas.length === 0 && ventasFiltradas.length === prevList.length) {
-        return prevList;
+      const ordenEstaCorrecto = ventasFiltradas.length === listaSegura.length && 
+        ventasFiltradas.every((factura, index) => factura.id_cita === ordenIdsCorrecto[index]);
+      // no hay cambios en la lista 
+      if (nuevasCitas.length === 0 && ordenEstaCorrecto) {
+        return listaSegura;
       }
 
+      let listaFinal = [...ventasFiltradas];
+        
       if (nuevasCitas.length > 0) {
-
         const nuevasFacturas = nuevasCitas.map((cita) => ({
           asistio: true,
           peluquera: peluqueras?.[0] || "Sin asignar",
@@ -37,9 +45,11 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
           total_final: 0,
           tipo_pago: "efectivo",
         }));
-        return [...ventasFiltradas, ...nuevasFacturas];  
+        listaFinal = [...listaFinal, ...nuevasFacturas];  
       }
-      return ventasFiltradas;
+
+      listaFinal.sort((a, b) => ordenIdsCorrecto.indexOf(a.id_cita) - ordenIdsCorrecto.indexOf(b.id_cita));
+      return listaFinal;
     })
   };
   useEffect(() => {
@@ -148,7 +158,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
 
       {salesList.length > 0 && (
         <button onClick={() => onSaveAll(salesList)}>
-          Finalizar y Guardar Caja
+          Guardar Todo
         </button>
       )}
     </div>

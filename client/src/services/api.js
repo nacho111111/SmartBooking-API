@@ -27,7 +27,10 @@ const handleResponse = async (res) => {
 
 export const getAppointmentsByDay = (dia) =>
     fetch(`${API_URL}/citas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
-    
+
+export const getFacturasByDay = (dia) =>
+    fetch(`${API_URL}/facturas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
+  
 export const postCitaFull = (data) => 
   fetch(`${API_URL}/citas/full`, {
     method: "POST",

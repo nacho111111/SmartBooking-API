@@ -53,7 +53,7 @@ export const useAppointments = () => {
   const handleSaveFacturas = (lista) => { // facuras y actualiza citas
     run (async () => { 
         const { listaCitas, listaFacturas } = organizarDatosParaGuardar(lista)
-        await postFacturas(listaFacturas);
+        await postFacturas(listaFacturas); // needfix
         await putCitas(listaCitas);
 
         handleGetFacturasMoreInfo(); // actualiza lista de facturas 
@@ -67,7 +67,7 @@ export const useAppointments = () => {
 
   const handleGetAppointmentsByDay = (day) => {
     run(async () => {
-      const data = await getAppointmentsByDay(day);
+      const data = await getAppointmentsByDay(day); // needfix
       setAppointmentsDay(Array.isArray(data) ? data : []);
     },
     (error) => alert(error.message)
