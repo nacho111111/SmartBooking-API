@@ -8,6 +8,7 @@ export default function AppointmentList({ appointments, onSelectUser }) {
           <th>Perro/Gato</th>
           <th>descripcion</th>
           <th>tipo</th>
+          <th>ID</th>
         </tr>
       </thead>
       <tbody>
@@ -16,9 +17,7 @@ export default function AppointmentList({ appointments, onSelectUser }) {
             <tr key={i} onClick={() => onSelectUser(a)}
               style={{ cursor: 'pointer' }}
             >
-              <td> 
-                {a.nombre_usuario}
-              </td>
+              <td>{a.nombre_usuario}</td>
               <td>
                 {new Date(a.hora_atencion).toLocaleTimeString('es-CL', {
                     hour: '2-digit',
@@ -29,6 +28,7 @@ export default function AppointmentList({ appointments, onSelectUser }) {
               <td>{a.nombre_mascota}</td>
               <td>{a.descripcion}</td>
               <td>{a.tipo}</td>
+              <td>{a.id_cita}</td>
             </tr>
           ))
         ) : (

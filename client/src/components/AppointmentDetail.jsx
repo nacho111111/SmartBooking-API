@@ -78,6 +78,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
       <table className="table-form">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Asistió</th>
             <th>Peluquera </th>
             <th>Servicio($)</th>
@@ -89,7 +90,9 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
         <tbody>
           {appointments.length > 0 ? (
           salesList.map((f, i) => (
+            
             <tr key={f.id_cita}>
+              <td>{f.id_cita}</td>
               <td>
                 <select 
                   value={f.asistio} 
@@ -144,6 +147,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
                   <option value="transferencia">Transferencia</option>
                 </select>
               </td>
+              
             </tr>
           ))
           ) : (
