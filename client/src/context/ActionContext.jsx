@@ -6,6 +6,11 @@ export const ActionProvider = ({ children }) => {
   const [count, setCount] = useState(0);
   const [error, setError] = useState(null);
 
+  const defaultErrorHandler = (err) => {
+    const mensaje = err.response?.data?.message || err.message || "Ocurrió un error inesperado";
+    alert(`⚠️ Error: ${mensaje}`);
+  };
+
   const run = async (fn, options = {}) => {
     const { onError } = options;
 
@@ -16,7 +21,11 @@ export const ActionProvider = ({ children }) => {
     } catch (err) {
       setError(err);
       console.error(err);
-      if (onError) onError(err);
+      if (onError) {
+        onError(err);
+      } else {
+        defaultErrorHandler(err);
+      }
     } finally {
       setCount((c) => c - 1);
     }

@@ -76,7 +76,13 @@ export const getCitasDeUsuario = asyncHandler(async (req, res) => { // revisar
 
 // Obtener citas programadas para el día de hoy con información del usuario y mascota
 export const getCitasPorDia = asyncHandler(async (req, res) => {
-    const { dia } = req.params;
+    const { dia, canceladas } = req.query;
+
+    const canceladasClean = canceladas !== 'true' || 'True';
+    var filter = "";
+    if (!canceladasClean){
+        filter = `AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)`;
+    }
     const query = `
     SELECT 
         c.id_cita,
@@ -93,50 +99,16 @@ export const getCitasPorDia = asyncHandler(async (req, res) => {
     INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
     INNER JOIN mascotas m ON c.id_mascota = m.id_mascota
     WHERE c.hora_atencion::date = $1 
-      AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)
+      ${filter}
     ORDER BY c.hora_atencion ASC
 `;
     const { rows } = await pool.query(query,[dia]);
     res.json(rows);
 });
 
-export const updateCitas = asyncHandler(async (req, res) => { // id_cita, asistio , peluquera
-    const citas = req.body; // array
-
-    if (!Array.isArray(citas) || citas.length === 0) {
-            return res.status(400).json({ message: "Se esperaba un array de citas" });
-    }
-    
-    const values = [];
-    const placeholders = citas.map((c, i) => {
-        const idx = i * 3;
-
-        values.push(
-        c.asistio ?? null,
-        c.peluquera || null,
-        c.id_cita
-        );
-
-        return `($${idx + 1}, $${idx + 2}, $${idx + 3})`;
-    }).join(",");
-
-    await pool.query(`
-        UPDATE citas AS c SET
-            asistio = COALESCE(v.asistio::bool, false),
-            peluquera = COALESCE(v.peluquera, c.peluquera)
-        FROM (
-            VALUES ${placeholders}
-        ) AS v(asistio, peluquera, id_cita)
-        WHERE c.id_cita = v.id_cita::int
-        `, values);
-
-    res.status(200).json({ message: "Caja sincronizada" });
-
-});
-
 export const createFullCita = transactionHandler (async(req, res, client) => {
     const {nombre_usuario, email, telefono, fecha, nombre_mascota, descripcion} = req.body;
-
+    const telefonoClean = telefono.replace('+', '');
     // 1. usuario
     const userRes = await client.query(
       `INSERT INTO usuarios (nombre_usuario, email, telefono) 
@@ -144,7 +116,7 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
        ON CONFLICT (telefono) 
        DO UPDATE SET email = EXCLUDED.email 
        RETURNING *`,
-      [nombre_usuario, email, telefono]
+      [nombre_usuario, email, telefonoClean]
     );
     const user = userRes.rows[0];
 
@@ -177,7 +149,7 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
         nombre_mascota: mascota.nombre_mascota,
         nombre_usuario: user.nombre_usuario,
         email: user.email,
-        telefono: user.telefono
+        telefono: user.telefonoClean
     }
     res.json(data);
 })

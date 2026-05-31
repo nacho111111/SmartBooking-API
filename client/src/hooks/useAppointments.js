@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { postCitaFull, getAppointmentsByDay, postFacturas, putCitas, getFacturasMoreInfo, getResumeFacturas } from "../services/api";
+import { postCitaFull, getAppointmentsByDay, getFacturasMoreInfo, getResumeFacturas, postSincronizarCaja } from "../services/api";
 import { useAction } from "../context/ActionContext";
 
 export const useAppointments = () => {
@@ -7,7 +7,7 @@ export const useAppointments = () => {
   // selector day
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
   const [facturasInfo, setFacturasInfo] = useState([]); // facturas todo
-  const [resumeFacturas, setResumeFactura] = useState("");
+  const [resumeFacturas, setResumeFactura] = useState(""); // resume de mes
   
   const { run } = useAction();
 
@@ -18,7 +18,7 @@ export const useAppointments = () => {
       .split("T")[0];
 
     run(async () => {
-        const data = await getAppointmentsByDay(hoy);
+        const data = await getAppointmentsByDay(hoy, false);
         if (mounted) setAppointments(data);
       });
       return () => {
@@ -26,52 +26,31 @@ export const useAppointments = () => {
       };
   }, []);
 
-  const organizarDatosParaGuardar = (listaOriginal) => { // citas y facturas
-    return listaOriginal.reduce(
-      (acc, { id_cita, asistio, peluquera, id_usuario, tipo_pago, total_peluqueria, total_productos }) => {
-
-        acc.listaCitas.push({ id_cita, asistio, peluquera });
-        acc.listaFacturas.push({ id_cita, id_usuario, tipo_pago, total_peluqueria, total_productos });
-
-        return acc;
-      },
-      { listaCitas: [], listaFacturas: [] }
-    );
-    // Retornamos ambas listas en un solo objeto
-  return { listaCitas, listaFacturas };
-  };
-
   const handleAddAppointment = (form) => {
     run(async () => { 
-        const nuevaCita = await postCitaFull(form);
-        setAppointments((prev) => [...prev, nuevaCita]);
-      },
-      (error) => alert(error.message)
-    )
-  }
-
-  const handleSaveFacturas = (lista) => { // facuras y actualiza citas
-    run (async () => { 
-        const { listaCitas, listaFacturas } = organizarDatosParaGuardar(lista)
-        await postFacturas(listaFacturas); // needfix
-        await putCitas(listaCitas);
-
-        handleGetFacturasMoreInfo(); // actualiza lista de facturas 
-        alert("Caja sincronizada 🚀");
-      },
-      {
-        onError: (error) =>
-        alert("Error al facturar: " + error.message),
+      const nuevaCita = await postCitaFull(form);
+      
+      setAppointments((prev) => {
+      const listaActualizada = [...prev, nuevaCita];
+        listaActualizada.sort((a, b) => {
+          return a.hora_atencion.localeCompare(b.hora_atencion);
+        });
+        return listaActualizada;
+      });
     })
+  }
+  const handleSaveFacturas = (lista) => { // facuras y actualiza citas
+    run(async () => { 
+        await postSincronizarCaja(lista)
+        alert("Caja sincronizada 🚀");
+      })
   };
 
   const handleGetAppointmentsByDay = (day) => {
     run(async () => {
-      const data = await getAppointmentsByDay(day); // needfix
+      const data = await getAppointmentsByDay(day, true);
       setAppointmentsDay(Array.isArray(data) ? data : []);
-    },
-    (error) => alert(error.message)
-    )   
+    })   
   }
   const handleGetFacturasMoreInfo = (desde, hasta, filtros) => {
     run(async () => {

@@ -1,5 +1,5 @@
-import { getCached,saveCache } from "./cache.js";
-import { getGeminiResponse } from '../../services/geminiService.js';
+import { getCached, saveCache } from "./cache.js";
+import { getGeminiResponse } from '../../Services/gemini.service.js';
 import { notifyAlert } from "../../utils/notifier.js"
 
 export async function handleMessage(t,hist,num) {

@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { createUser, deleteUser, getUser, getUsers, updateUser, setBotActive } from "../controllers/users.controllers.js";
-import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasPorDia, updateCita, updateCitas, createFullCita } from "../controllers/citas.controllers.js"
-import { createFactura, createFacturas, deleteFactura, getFactura, updateFactura, getFacturasPaginadas, getResumenMensualPeluquera, getFacturasPorDia} from "../controllers/facturas.controllers.js"
+import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasPorDia, updateCita, createFullCita } from "../controllers/citas.controllers.js";
+import { createFactura, deleteFactura, getFactura, updateFactura, getFacturasPaginadas, getResumenMensualPeluquera, getFacturasPorDia} from "../controllers/facturas.controllers.js";
 import { getMascotasPaginadas, getMascotasFull, updateMascota } from "../controllers/mascotas.controllers.js";
+import { sincronizarCaja } from "../controllers/caja.controller.js";
 import { hookCitaCal } from "../webhooks/calHandlers.js"
 import { whatsAppVerify } from "../webhooks/whatsAppVerify.js"
 import { whatsAppAnswers } from "../webhooks/whatsAppAnswers.js"
@@ -32,9 +33,8 @@ router.put("/usuarios/:id" ,updateUser);
 //citas
 
 router.get("/citas", getCitas);
-router.put("/citas/multi", updateCitas);
 router.post("/citas/full", createFullCita);
-router.get("/citas/dia/:dia", getCitasPorDia);
+router.get("/citas/dia", getCitasPorDia);
 router.get("/usuarios/:id_usuario/citas", getCitasDeUsuario);
 
 router.get("/citas/:id", getCita);
@@ -44,7 +44,6 @@ router.put("/citas/:id", updateCita);
 
 //facturas
 router.get("/facturas", getFacturasPaginadas);
-router.post("/facturas/multi", createFacturas);
 router.get("/facturas/resume", getResumenMensualPeluquera)
 router.get("/facturas/dia/:dia", getFacturasPorDia);
 
@@ -58,6 +57,9 @@ router.put("/facturas", updateFactura);
 router.get("/mascotas", getMascotasPaginadas)
 router.get("/mascotas/info",getMascotasFull);
 router.patch("/mascotas", updateMascota)
+
+//caja
+router.post("/caja/sincronizar", sincronizarCaja)
 
 //whatsapp
 router.post("/messages/send", sendMessageManual)

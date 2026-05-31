@@ -1,4 +1,4 @@
-import { setMensaje, getMensajesByNumber, clearHistoryByNumber} from "../services/dbService.js";
+import { setMensaje, getMensajesByNumber, clearHistoryByNumber} from "../Services/messages.service.js";
 
 export const saveMessage = async(num, role, content) => {
     await setMensaje(num, role, content);

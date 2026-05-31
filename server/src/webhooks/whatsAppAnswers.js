@@ -1,7 +1,7 @@
 import { saveMessage, getChatHistory, clearHistory} from '../models/ChatHistory.js';
 import { sendWhatsAppMessage } from "../external/whatsAppClient.js"
 import { handleMessage } from "../logic/questionSystem/index.js"
-import { getBotActive, getUserByNum, setUser } from "../services/dbService.js"
+import { getBotActive, getUserByNum, setUser } from "../Services/messages.service.js"
 import { asyncHandler } from '../middlewares/asyncHandler.js';
 
 export const whatsAppAnswers = asyncHandler(async (req, res) => {

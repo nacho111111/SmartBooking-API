@@ -30,6 +30,7 @@ const ListaCitasPorDia = ({onSelectUser, appointmentsDay, handleGetByDay}) => {
                 <th>Perro/Gato</th>
                 <th>Descripción</th>
                 <th>Tipo</th>
+                <th>Estado</th>
             </tr>
             </thead>
             <tbody>
@@ -51,11 +52,12 @@ const ListaCitasPorDia = ({onSelectUser, appointmentsDay, handleGetByDay}) => {
                     <td>{a.nombre_mascota}</td>
                     <td>{a.descripcion}</td>
                     <td>{a.tipo}</td>
+                    <td>{a.estado}</td>
                 </tr>
                 ))
             ) : (
                 <tr>
-                <td colSpan="5" className="text-center text-muted">
+                <td colSpan="6" className="text-center text-muted">
                     No hay citas para este día.
                 </td>
                 </tr>

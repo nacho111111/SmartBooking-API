@@ -1,76 +1,10 @@
 import { useEffect, useState } from "react";
 
-export default function AppointmentDetail({ appointments , onSaveAll, salesList, setSalesList, peluqueras}) {
+export default function AppointmentDetail({ appointments , onSaveAll, salesList, peluqueras, handlerUpdate, handleSync}) {
   
-  const idsExistentes = new Set(appointments.map(f => f.id_cita));
-
-  const actualizarLista = () => {
-    if (!appointments || appointments.length === 0) {
-      return;
-    }
-    
-    setSalesList(prevList => {
-      const listaSegura = Array.isArray(prevList) ? prevList : [];
-
-      const ventasFiltradas = listaSegura.filter(
-        factura => idsExistentes.has(factura.id_cita)
-      );
-
-      const idsExistentesEnVentas = new Set(
-        ventasFiltradas.map(f => f.id_cita)
-      );
-
-      const nuevasCitas = appointments.filter(
-        cita => !idsExistentesEnVentas.has(cita.id_cita)
-      );
-      const ordenIdsCorrecto = appointments.map(c => c.id_cita);
-
-      const ordenEstaCorrecto = ventasFiltradas.length === listaSegura.length && 
-        ventasFiltradas.every((factura, index) => factura.id_cita === ordenIdsCorrecto[index]);
-      // no hay cambios en la lista 
-      if (nuevasCitas.length === 0 && ordenEstaCorrecto) {
-        return listaSegura;
-      }
-
-      let listaFinal = [...ventasFiltradas];
-        
-      if (nuevasCitas.length > 0) {
-        const nuevasFacturas = nuevasCitas.map((cita) => ({
-          asistio: true,
-          peluquera: peluqueras?.[0] || "Sin asignar",
-          id_cita: cita.id_cita,
-          id_usuario: cita.id_usuario,
-          total_peluqueria: 0,
-          total_productos: 0,
-          total_final: 0,
-          tipo_pago: "efectivo",
-        }));
-        listaFinal = [...listaFinal, ...nuevasFacturas];  
-      }
-
-      listaFinal.sort((a, b) => ordenIdsCorrecto.indexOf(a.id_cita) - ordenIdsCorrecto.indexOf(b.id_cita));
-      return listaFinal;
-    })
-  };
   useEffect(() => {
-    actualizarLista();
+    handleSync(appointments,peluqueras);
   }, [appointments]);
-
-  // 4. Actualizador genérico
-  const updateFactura = (index, field, value) => {
-    const updated = [...salesList];
-    
-    if (field === "total_peluqueria" || field === "total_productos") {
-      updated[index][field] = Number(value) || 0;
-      // Cálculo automático del total final
-      updated[index].total_final = 
-        Number(updated[index].total_peluqueria) + Number(updated[index].total_productos);
-    } else {
-      updated[index][field] = value;
-    }
-
-    setSalesList(updated);
-  };
   
   return (
     <div className="p-4">
@@ -96,7 +30,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
               <td>
                 <select 
                   value={f.asistio} 
-                  onChange={(e) => updateFactura(i, "asistio", e.target.value)}
+                  onChange={(e) => handlerUpdate(i, "asistio", e.target.value)}
                 >
                   <option value={true}>Si</option>
                   <option value={false}>No</option>
@@ -105,7 +39,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
               <td>
                 <select 
                   value={f.peluquera} 
-                  onChange={(e) => updateFactura(i, "peluquera", e.target.value)}
+                  onChange={(e) => handlerUpdate(i, "peluquera", e.target.value)}
                 >
                   {peluqueras.map((nombre, index) => (
                     <option key={index} value={nombre}>{nombre}</option>
@@ -119,7 +53,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
                   onChange={(e) => {
                     const val = e.target.value;
                     const numericValue = val === "" ? 0 : parseInt(val, 10);
-                    updateFactura(i, "total_peluqueria", numericValue)
+                    handlerUpdate(i, "total_peluqueria", numericValue)
                   }}
                   onFocus={(e) => {if (f.total_productos === 0) e.target.select()}}
                 />
@@ -131,7 +65,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
                   onChange={(e) => {
                     const val = e.target.value;
                     const numericValue = val === "" ? 0 : parseInt(val, 10);
-                    updateFactura(i, "total_productos", numericValue)
+                    handlerUpdate(i, "total_productos", numericValue)
                   }}
                   onFocus={(e) => {if (f.total_productos === 0) e.target.select()}}
                 />
@@ -140,7 +74,7 @@ export default function AppointmentDetail({ appointments , onSaveAll, salesList,
               <td>
                 <select 
                   value={f.tipo_pago} 
-                  onChange={(e) => updateFactura(i, "tipo_pago", e.target.value)}
+                  onChange={(e) => handlerUpdate(i, "tipo_pago", e.target.value)}
                 >
                   <option value="efectivo">Efectivo</option>
                   <option value="tarjeta">Tarjeta</option>

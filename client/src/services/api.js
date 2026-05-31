@@ -25,8 +25,13 @@ const handleResponse = async (res) => {
   }
 };
 
-export const getAppointmentsByDay = (dia) =>
-    fetch(`${API_URL}/citas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
+export const getAppointmentsByDay = (dia, cancelada = false) => {
+    const params = new URLSearchParams({
+      dia: dia.toString(),
+      cancelada: cancelada.toString()
+    })
+    return fetch(`${API_URL}/citas/dia?${params.toString()}`,{credentials: 'include'}).then(handleResponse);
+  }
 
 export const getFacturasByDay = (dia) =>
     fetch(`${API_URL}/facturas/dia/${dia}`,{credentials: 'include'}).then(handleResponse);
@@ -39,17 +44,9 @@ export const postCitaFull = (data) =>
     credentials: 'include'
   }).then(handleResponse);
 
-export const postFacturas = (lista) => 
-  fetch(`${API_URL}/facturas/multi`, {
+export const postSincronizarCaja = (lista) => 
+  fetch(`${API_URL}/caja/sincronizar`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(lista),
-    credentials: 'include'
-  }).then(handleResponse);
-
-export const putCitas = (lista) => 
-  fetch(`${API_URL}/citas/multi`, {
-    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(lista),
     credentials: 'include'
@@ -116,7 +113,6 @@ export const getFacturasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {
   return fetch(`${API_URL}/facturas?${params.toString()}`, {
     credentials: 'include'
   }).then(handleResponse);
-
 }
 
 export const getMascotasMoreInfo = (desde = 1, hasta = 10, filtros = {}) => {

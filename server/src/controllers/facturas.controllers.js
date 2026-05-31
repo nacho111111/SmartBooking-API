@@ -1,5 +1,6 @@
 import { pool } from "../db.js";
 import { asyncHandler } from "../middlewares/asyncHandler.js";
+import { transactionHandler } from "../middlewares/transactionHandler.js";
 
 export const getFacturas = asyncHandler(async (req, res) => {
     const { rows } = await pool.query(
@@ -72,48 +73,6 @@ export const updateFactura = asyncHandler(async (req, res) => {
     res.json(rows[0]);
 });
 
-
-export const createFacturas = asyncHandler(async (req, res) => { // bulk insert
-    const facturas = req.body;
-
-    if (!Array.isArray(facturas) || facturas.length === 0) {
-        return res.status(400).json({ message: "Se esperaba un array de facturas" });
-    }
-
-    const values = [];
-    const placeholders = facturas.map((f, i) => {
-        const idx = i * 5;
-        values.push(
-            f.id_cita,
-            f.id_usuario,
-            f.total_peluqueria,
-            f.total_productos,
-            f.tipo_pago
-        );
-
-    return `($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5})`;
-    }).join(",");
-
-    const client = await pool.connect();
-    try {
-        await client.query('BEGIN');
-        await client.query(`
-            INSERT INTO facturas (id_cita, id_usuario, total_peluqueria, total_productos, tipo_pago)
-            VALUES ${placeholders}
-            ON CONFLICT (id_cita) DO UPDATE SET 
-                total_peluqueria = EXCLUDED.total_peluqueria,
-                total_productos = EXCLUDED.total_productos,
-                tipo_pago = EXCLUDED.tipo_pago
-            `, values);
-        await client.query('COMMIT');
-        res.status(200).json({ message: "Caja sincronizada" });
-    } catch (e) {
-        await client.query('ROLLBACK');
-        throw e;
-    } finally {
-        client.release();
-    }
-});
 
 export const getFacturasMoreInfo = asyncHandler(async(req,res) =>{ // todas las facturas mas informacion adicional
     const query = 
@@ -244,9 +203,7 @@ export const getResumenMensualPeluquera = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Faltan parámetros requeridos: mes y peluquera." });
     }
     
-
     const inicioMes = `${mes}-01 00:00:00`;
-
     const query = `
         SELECT 
 
@@ -316,5 +273,4 @@ export const getResumenMensualPeluquera = asyncHandler(async (req, res) => {
             peluqueriaNe: Math.round(parseFloat(data.bano_neto_peluqueria))
         }
     });
-
 });

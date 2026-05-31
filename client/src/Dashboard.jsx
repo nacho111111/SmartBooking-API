@@ -30,7 +30,7 @@ export default function Dashboard() {
   const { appointments, handleAddAppointment, handleSaveFacturas, appointmentsDay, handleGetAppointmentsByDay, handleGetFacturasMoreInfo, facturasInfo, handleGetResumeFacturas, resumeFacturas} = useAppointments(); // citas, factura, fetch
   const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState, handleGetHistNums} = useMessages(); // todo messages
   const { mascotasInfo, handleSetMascotasNotes, handleGetMascotasMoreInfo } = useMascotas();
-  const { salesList, setSalesList } = useSales();
+  const { salesList, handleSyncAppointments, handlerUpdateFactura } = useSales();
   const { listPeluqueras, handleAddPel, handleDeletePel } = usePeluqueras();
   
   const { error, loading } = useAction();
@@ -68,8 +68,9 @@ export default function Dashboard() {
               appointments={appointments}
               onSaveAll={handleSaveFacturas}
               salesList={salesList}
-              setSalesList={setSalesList}
               peluqueras={listPeluqueras}
+              handlerUpdate={handlerUpdateFactura}
+              handleSync={handleSyncAppointments}
             />
             <Summary 
               salesList={salesList}

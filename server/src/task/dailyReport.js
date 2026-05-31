@@ -1,5 +1,6 @@
 import cron from "node-cron";
-import { getCitasPorDia, setBotsStatusByDate } from "../Services/dbService.js";
+import { setBotsStatusByDate } from "../Services/messages.service.js";
+import { getCitasPorDia } from "../Services/citas.service.js";
 import { whatsAppReminder } from "../webhooks/whatsAppReminder.js";
 import { saveMessage } from "../models/ChatHistory.js";
 
