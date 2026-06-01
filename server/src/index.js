@@ -30,28 +30,29 @@ const corsOptions = {
   },
   credentials: true
 };
-const io = new Server(server, {cors: corsOptions});
-
-io.on("connection", (socket) => {
-  console.log("Usuario conectado al socket");
-});
 
 // middlewares
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(express.json());
+app.set('trust proxy', 1);
+app.use(express.urlencoded({extended: false}));
+app.use(morgan("dev"));
+
+const io = new Server(server, {cors: corsOptions});
+
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
-app.use(cookieParser());
-app.use(cors(corsOptions));
-app.set('trust proxy', 1);
-app.use(morgan("dev"));
-app.use(express.urlencoded({extended: false}));
-app.use(express.json());
-app.use(errorHandler);
 //routes
 app.use(userRoutes);
-
+app.use(errorHandler);
 //starting the server
+io.on("connection", (socket) => {
+  console.log("Usuario conectado al socket");
+});
+
 server.listen(PORT, () => {
     console.log(`Server on port ${PORT}`);
 });

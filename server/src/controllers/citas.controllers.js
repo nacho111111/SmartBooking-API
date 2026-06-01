@@ -76,11 +76,12 @@ export const getCitasDeUsuario = asyncHandler(async (req, res) => { // revisar
 
 // Obtener citas programadas para el día de hoy con información del usuario y mascota
 export const getCitasPorDia = asyncHandler(async (req, res) => {
-    const { dia, canceladas } = req.query;
+    const { dia, cancelada } = req.query;
 
-    const canceladasClean = canceladas !== 'true' || 'True';
+    const showCanceladas = cancelada !== 'true'; 
+
     var filter = "";
-    if (!canceladasClean){
+    if (showCanceladas){
         filter = `AND (LOWER(c.estado) NOT IN ('cancelada', 'reagendada') OR c.estado IS NULL)`;
     }
     const query = `
