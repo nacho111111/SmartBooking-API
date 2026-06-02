@@ -32,12 +32,11 @@ Se opto por Diseñar y programar una Application full satck en Node.js, Express,
 
 * **Flexibilidad y Control:** Capacidad de implementar consultas dinámicas avanzadas y comunicación bidireccional en tiempo real con WebSockets.
 
-🌐 **Link de estructura del sistema MVP:** [Visita del sistema MVP](https://tu-proyecto-en-vivo.com)
+🌐 **Link de estructura del sistema MVP:** [Visita del sistema MVP](https://github.com/nacho111111/event-driven-appointment-automation)
 
 ### 📺 Demostración en 5 Segundos
-*(Inserta aquí un GIF animado o un video corto de 1 minuto mostrando la funcionalidad principal)*
 
-![Demostración de la App](https://placeholder.com)
+![Demostración de la App]()
 
 ---
 
@@ -50,8 +49,6 @@ Se opto por Diseñar y programar una Application full satck en Node.js, Express,
 ---
 
 ### 🛠️ Configuración Local 
-
-Si deseas revisar el flujo de trabajo o ejecutar los tests en tu máquina:
 
 variables de entorno
 ```bash
