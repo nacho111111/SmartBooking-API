@@ -6,11 +6,11 @@ Este proyecto nace como una solución tecnológica a medida para la optimizació
 
 El sistema unifica tres pilares fundamentales del negocio en una sola API robusta:
 
-* **Gestióny Persistencia de Datos:**  Procesamiento y consulta optimizada de bases de datos para el control de citas, historiales de mascotas y clientes de forma persistente y segura.
+* **Gestión y Persistencia de Datos:**  Procesamiento y consulta optimizada de bases de datos para el control de citas, historiales de mascotas y clientes de forma persistente y segura.
 
 * **Conciliación Financiera:**  Automatización del flujo de caja diario, registrando de manera integrada las ventas de productos, cobros de servicios e información varia.
 
-* **Comunicación Automatizada y Omnicanal:**  Integración avanzada de flujos de trabajo basados en eventos (Event-Driven Architecture) mediante el consumo de Webhooks de plataformas líderes como Cal.com y la API de WhatsApp Business (Meta).
+* **Comunicación Automatizada y Omnicanal:**  Integración de flujos de trabajo basados en eventos (Event-Driven Architecture) mediante el consumo de Webhooks de plataformas como Cal.com y la API de WhatsApp Business (Meta).
 
 Gracias a este motor de integraciones, el sistema gestiona recordatorios de asistencia automáticos, procesa respuestas del chatbot bidireccional y ofrece un panel de administración de mensajería en tiempo real. Como resultado directo, se reduce drásticamente la complejidad operativa y el tiempo de gestión diaria, permitiendo al negocio enfocarse en la calidad de su servicio técnico.
 
@@ -26,7 +26,7 @@ A medida que el volumen de citas y transacciones de la peluquería canina creci�
 **Link de estructura del sistema MVP:** [Visita del sistema MVP](https://github.com/nacho111111/event-driven-appointment-automation)
 
 #### Impacto de la actualización:
-Se opto por Diseñar y programar una Application full satck en Node.js, Express, React y PostgreSQL para reemplazar por completo la infraestructura de Make.com. Al centralizar la lógica en código propio, se logró:
+Se opto por Diseñar y programar una Application Full Stack en Node.js, Express, React y PostgreSQL para reemplazar por completo la infraestructura de Make.com. Al centralizar la lógica en código propio, se logró:
 
 * **Consistencia Financiera:** Control absoluto sobre los datos mediante transacciones SQL (BEGIN/COMMIT), algo imposible de asegurar en flujos No-Code lineales.
 
@@ -34,24 +34,16 @@ Se opto por Diseñar y programar una Application full satck en Node.js, Express,
 
 * **Flexibilidad y Control:** Capacidad de implementar consultas dinámicas avanzadas y comunicación bidireccional en tiempo real con WebSockets.
 
-
-### Demostración en 5 Segundos
+### Demostración app
 
 ![Demostración de la App](https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif)
-
----
-
-### El Reto Técnico y la Solución
-
-* **El Problema:** Las herramientas actuales de gestión son lentas, colapsan con bases de datos grandes y no se adaptan correctamente a dispositivos móviles.
-* **La Solución:** Diseñé una SPA (Single Page Application) optimizada con carga perezosa (*lazy loading*), paginación eficiente en el backend y una interfaz móvil-primero (*mobile-first*).
-* **El Resultado:** La aplicación funciona de manera fluida en conexiones 3G lentas y obtuvo una puntuación de **95+/100 en rendimiento en Google Lighthouse**.
 
 ---
 
 ### Configuración Local 
 
 variables de entorno
+
 ```bash
 # data base
 DB_USER
