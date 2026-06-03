@@ -37,7 +37,7 @@ Se opto por Diseñar y programar una Application full satck en Node.js, Express,
 
 ### Demostración en 5 Segundos
 
-![Demostración de la App]()
+![Demostración de la App](https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif)
 
 ---
 
