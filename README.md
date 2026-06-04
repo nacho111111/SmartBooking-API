@@ -51,6 +51,8 @@ Gracias a este motor de integraciones, el sistema gestiona recordatorios de asis
 
 ![Arquitectura](https://github.com/nacho111111/SmartBooking-API/blob/main/architecture.png)
 
+---
+
 ### Demostración app
 
 ![Demostración de la App](https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif)
