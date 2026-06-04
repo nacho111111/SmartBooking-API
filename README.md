@@ -1,5 +1,37 @@
 # SmartBooking API — Sistema Transaccional de Citas y Automatización de Mensajería
 
+### Tecnologías
+
+- Node.js
+- Express.js
+- PostgreSQL
+- React
+- Socket.IO
+- WhatsApp Business API
+- Cal.com Webhooks
+- Railway
+- Ngrok
+
+### Funcionalidades
+
+- Gestión de citas sincronizadas con Cal.com
+- Registro y conciliación diaria de caja
+- Facturación y control de ventas
+- Recordatorios automáticos por WhatsApp
+- Chatbot bidireccional
+- Actualización en tiempo real mediante WebSockets
+- Persistencia transaccional en PostgreSQL
+
+### Frontend
+
+Aplicación React para:
+
+- Gestión de citas
+- Administración de ventas
+- Seguimiento de mensajes
+- Control diario de caja
+- Actualización en tiempo real mediante Socket.IO
+- 
 ### Descripción del Proyecto
 
 Este proyecto nace como una solución tecnológica a medida para la optimización y automatización de procesos operativos en el sector de servicios estéticos de mascotas (Peluquería Canina). El objetivo principal es eliminar la carga operativa de tareas repetitivas y críticas mediante el desarrollo de un ecosistema digital eficiente y conectado.
@@ -10,7 +42,7 @@ El sistema unifica tres pilares fundamentales del negocio en una sola API robust
 
 * **Conciliación Financiera:**  Automatización del flujo de caja diario, registrando de manera integrada las ventas de productos, cobros de servicios e información varia.
 
-* **Comunicación Automatizada y Omnicanal:**  Integración de flujos de trabajo basados en eventos (Event-Driven Architecture) mediante el consumo de Webhooks de plataformas como Cal.com y la API de WhatsApp Business (Meta).
+* **Integración con WhatsApp Business y Webhooks:**  Integración de flujos de trabajo basados en eventos (Event-Driven Architecture) mediante el consumo de Webhooks de plataformas como Cal.com y la API de WhatsApp Business (Meta).
 
 Gracias a este motor de integraciones, el sistema gestiona recordatorios de asistencia automáticos, procesa respuestas del chatbot bidireccional y ofrece un panel de administración de mensajería en tiempo real. Como resultado directo, se reduce drásticamente la complejidad operativa y el tiempo de gestión diaria, permitiendo al negocio enfocarse en la calidad de su servicio técnico.
 
@@ -42,34 +74,29 @@ Se opto por Diseñar y programar una Application Full Stack en Node.js, Express,
 
 ### Configuración Local 
 
-variables de entorno
+Debido a que el sistema depende críticamente de Webhooks en producción (Meta/WhatsApp Business API y Cal.com), la ejecución local requiere herramientas de tunelización como Ngrok para exponer los puertos locales.
+
+Clonar el repositorio:
 
 ```bash
-# data base
-DB_USER
-DB_HOST 
-DB_PASSWORD 
-DB_DATABASE 
-DB_PORT 
+git clone https://github.com/tu-usuario/tu-repo.git
+cd tu-repo
 
-# Requerimientos whatsapp business api
-WHATSAPP_TOKEN 
-PHONE_NUMBER_ID
-WHATSAPP_VERIFY_TOKEN
-
-# Dirección física y num telefono para recordatorios/mensajes
-ADDRES
-NUMPELU
-
-# Telegram bot config
-TELEGRAM_TOKEN
-TELEGRAM_CHAT_ID
-
-# Contraseña front to server y token para cookie de sesión única
-PASS
-AUTH_TOKEN_VALUE
-
-# direccion URL del front y de cal.com
-FRONTEND_URL
-LINKAGENDA
 ```
+Instalar dependencias:
+```bash
+npm install
+```
+Configurar Variables de Entorno:
+Crea un archivo .env en la raíz basado en el archivo de ejemplo adjunto .env.example.
+
+###  Arquitectura y Seguridad
+El backend está diseñado bajo principios de resiliencia, modularidad y seguridad informática exigidos en entornos de producción cloud:
+
+* **Persistencia Transaccional (ACID):** Las operaciones financieras (flujo de caja diario) y de control de agendas se ejecutan dentro de bloques transaccionales (BEGIN/COMMIT/ROLLBACK). Si una inserción masiva falla, el sistema realiza un rollback completo evitando la corrupción de datos.
+
+* **Políticas de CORS Dinámicas:** El acceso a la API está restringido mediante una lista blanca (whitelist) configurable por entorno, protegiendo los endpoints de llamadas no autorizadas, permitiendo al mismo tiempo las conexiones de integración necesarias (como cal.com).
+
+* **Seguridad de Sesión (Mitigación XSS/CSRF):** La autenticación se maneja mediante tokens inyectados en cookies con directivas estrictas (httpOnly: true, secure: true, sameSite: 'none'). Además, el servidor está configurado para operar de forma segura detrás de los proxies inversos de la infraestructura de Railway (trust proxy).
+
+* **Middlewares de Control:** Implementación de un manejador global de excepciones (errorHandler) que centraliza las respuestas de error de la API, evitando la fuga de trazas internas del servidor (stack traces) al cliente.
