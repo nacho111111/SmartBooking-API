@@ -34,7 +34,7 @@ Aplicación React para:
 
 ### Descripción del Proyecto
 
-Este proyecto nace como una solución tecnológica a medida para la optimización y automatización de procesos operativos en el sector de servicios estéticos de mascotas (Peluquería Canina). El objetivo principal es eliminar la carga operativa de tareas repetitivas y críticas mediante el desarrollo de un ecosistema digital eficiente y conectado.
+Este proyecto nace como una solución tecnológica a medida para la optimización y automatización de procesos operativos en el sector de servicios estéticos de mascotas (Peluquería Canina). El objetivo principal es eliminar la carga operativa de tareas repetitivas y críticas mediante el desarrollo de una plataforma digital.
 
 El sistema unifica tres pilares fundamentales del negocio en una sola API robusta:
 
@@ -44,7 +44,7 @@ El sistema unifica tres pilares fundamentales del negocio en una sola API robust
 
 * **Integración con WhatsApp Business y Webhooks:**  Integración de flujos de trabajo basados en eventos (Event-Driven Architecture) mediante el consumo de Webhooks de plataformas como Cal.com y la API de WhatsApp Business (Meta).
 
-Gracias a este motor de integraciones, el sistema gestiona recordatorios de asistencia automáticos, procesa respuestas del chatbot bidireccional y ofrece un panel de administración de mensajería en tiempo real. Como resultado directo, se reduce drásticamente la complejidad operativa y el tiempo de gestión diaria, permitiendo al negocio enfocarse en la calidad de su servicio técnico.
+Gracias a este motor de integraciones, el sistema gestiona recordatorios de asistencia automáticos, procesa respuestas del chatbot bidireccional y ofrece un panel de administración de mensajería en tiempo real. Como resultado directo, se reduce drásticamente la complejidad operativa y el tiempo de gestión diaria, permitiendo al negocio enfocarse en la calidad de su servicio.
 
 
 ### Arquitectura
