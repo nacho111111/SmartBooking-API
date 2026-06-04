@@ -92,12 +92,28 @@ cd SmartBooking-API
 
 ```
 Instalar dependencias:
-```bash
-npm install
-```
-Configurar Variables de Entorno:
-Crea un archivo .env en la raíz basado en el archivo de ejemplo adjunto .env.example.
 
+```bash
+# Navegar a la carpeta del servidor
+cd server
+
+# Instalar dependencias del backend
+npm install
+
+# Configurar variables de entorno
+# Crea un archivo .env en esta carpeta basado en server/.env.example
+```
+
+```bash
+# Regresar a la raíz y navegar a la carpeta del cliente
+cd ../client
+
+# Instalar dependencias del frontend
+npm install
+# Configurar variables de entorno
+# Crea un archivo .env en esta carpeta basado en client/.env.example
+
+```
 ---
 
 ###  Arquitectura y Seguridad
