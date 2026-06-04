@@ -46,6 +46,7 @@ El sistema unifica tres pilares fundamentales del negocio en una sola API robust
 
 Gracias a este motor de integraciones, el sistema gestiona recordatorios de asistencia automáticos, procesa respuestas del chatbot bidireccional y ofrece un panel de administración de mensajería en tiempo real. Como resultado directo, se reduce drásticamente la complejidad operativa y el tiempo de gestión diaria, permitiendo al negocio enfocarse en la calidad de su servicio técnico.
 
+![Demostración de la App]([https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif](https://github.com/nacho111111/event-driven-appointment-automation](https://github.com/nacho111111/SmartBooking-API/blob/main/architecture.png))
 ---
 
 ### Evolución del Sistema: De MVP (No-Code) a Arquitectura Propia
