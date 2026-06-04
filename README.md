@@ -9,8 +9,6 @@
 - Socket.IO
 - WhatsApp Business API
 - Cal.com Webhooks
-- Railway
-- Ngrok
 
 ### Funcionalidades
 
@@ -32,6 +30,8 @@ Aplicación React para:
 - Control diario de caja
 - Actualización en tiempo real mediante Socket.IO
 
+---
+
 ### Descripción del Proyecto
 
 Este proyecto nace como una solución tecnológica a medida para la optimización y automatización de procesos operativos en el sector de servicios estéticos de mascotas (Peluquería Canina). El objetivo principal es eliminar la carga operativa de tareas repetitivas y críticas mediante el desarrollo de un ecosistema digital eficiente y conectado.
@@ -50,6 +50,10 @@ Gracias a este motor de integraciones, el sistema gestiona recordatorios de asis
 ### Arquitectura
 
 ![Arquitectura](https://github.com/nacho111111/SmartBooking-API/blob/main/architecture.png)
+
+### Demostración app
+
+![Demostración de la App](https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif)
 
 ---
 
@@ -71,9 +75,6 @@ Se opto por Diseñar y programar una Application Full Stack en Node.js, Express,
 
 * **Flexibilidad y Control:** Capacidad de implementar consultas dinámicas avanzadas y comunicación bidireccional en tiempo real con WebSockets.
 
-### Demostración app
-
-![Demostración de la App](https://github.com/nacho111111/SmartBooking-API/blob/main/demo.gif)
 
 ---
 
@@ -84,8 +85,8 @@ Debido a que el sistema depende críticamente de Webhooks en producción (Meta/W
 Clonar el repositorio:
 
 ```bash
-git clone https://github.com/tu-usuario/tu-repo.git
-cd tu-repo
+git clone https://github.com/nacho111111/SmartBooking-API.git
+cd SmartBooking-API
 
 ```
 Instalar dependencias:
@@ -94,6 +95,8 @@ npm install
 ```
 Configurar Variables de Entorno:
 Crea un archivo .env en la raíz basado en el archivo de ejemplo adjunto .env.example.
+
+---
 
 ###  Arquitectura y Seguridad
 El backend está diseñado bajo principios de resiliencia, modularidad y seguridad informática exigidos en entornos de producción cloud:
