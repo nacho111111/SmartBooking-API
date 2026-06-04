@@ -31,7 +31,7 @@ Aplicación React para:
 - Seguimiento de mensajes
 - Control diario de caja
 - Actualización en tiempo real mediante Socket.IO
-- 
+
 ### Descripción del Proyecto
 
 Este proyecto nace como una solución tecnológica a medida para la optimización y automatización de procesos operativos en el sector de servicios estéticos de mascotas (Peluquería Canina). El objetivo principal es eliminar la carga operativa de tareas repetitivas y críticas mediante el desarrollo de un ecosistema digital eficiente y conectado.
