@@ -56,4 +56,3 @@ export const setBotActive = asyncHandler(async (req,res) => {
     await pool.query(query, [bot_active, num])
     res.sendStatus(204);
 })
-

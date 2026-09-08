@@ -136,3 +136,4 @@ export const getResumeFacturas = (mes, peluquera) => {
     credentials: 'include'
     }).then(handleResponse);
 };
+

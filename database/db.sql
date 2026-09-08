@@ -29,6 +29,7 @@ CREATE TABLE citas (
     CONSTRAINT fk_mascota_cita FOREIGN KEY (id_mascota) REFERENCES mascotas(id_mascota) ON DELETE CASCADE;
 );
 
+
 CREATE TABLE facturas (
     id_factura SERIAL PRIMARY KEY,
     id_cita INTEGER UNIQUE,
