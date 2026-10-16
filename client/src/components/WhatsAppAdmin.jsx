@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg, setSelectedContact, selectedContact, handleBotState, handleGetHistNums}) => {
+export function WhatsAppAdmin({contacts, handleGetMessages, msgsMore, loading, sendMsg, setSelectedContact, selectedContact, handleBotState, handleGetHistNums}) {
   
   const [newMessage, setNewMessage] = useState(""); // mensaje a enviar
   const messagesRef = useRef(null);
@@ -286,5 +286,3 @@ const WhatsAppAdmin = ({contacts, handleGetMessages, msgsMore, loading, sendMsg,
   </div>
   );
 }
-
-export default WhatsAppAdmin;

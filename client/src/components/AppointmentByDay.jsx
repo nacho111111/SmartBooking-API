@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const ListaCitasPorDia = ({onSelectUser, appointmentsDay, handleGetByDay}) => {
-     const [fechaSeleccionada, setFechaSeleccionada] = useState('');
+export function AppointmentByDay({onSelectUser, appointmentsDay, handleGetByDay}) {
+    const [fechaSeleccionada, setFechaSeleccionada] = useState('');
 
     const handleSelectFecha = (e) => { 
         const nuevaFecha = e.target.value;
@@ -67,5 +67,3 @@ const ListaCitasPorDia = ({onSelectUser, appointmentsDay, handleGetByDay}) => {
         </div>
   );
 };
-
-export default ListaCitasPorDia;

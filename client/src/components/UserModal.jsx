@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserModal = ({ user, onClose }) => {
+export function UserModal({ user, onClose }){
   if (!user) return null;
 
   return (
@@ -25,5 +25,3 @@ const UserModal = ({ user, onClose }) => {
     </div>
   );
 };
-
-export default UserModal;

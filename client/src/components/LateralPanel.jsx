@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import FacturasList from './FacturasList'; // El componente que creamos antes
 
-const LateralPanel = ({ options , activeTab, getMascotas}) => {
+export function LateralPanel({ options , activeTab, getMascotas}) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -195,5 +195,3 @@ const LateralPanel = ({ options , activeTab, getMascotas}) => {
     </div>
   );
 };
-
-export default LateralPanel;

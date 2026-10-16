@@ -1,6 +1,6 @@
 import { useState} from "react";
 
-export default function ClientForm({ onAdd ,setShowForm }) {
+export function ClientForm({ onAdd ,setShowForm }) {
 
   const [form, setForm] = useState({
     nombre_usuario: "",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Summary({ salesList , peluqueras}) {
+export function Summary({ salesList , peluqueras}) {
 
   const [peluquerasLocal, setPeluquerasLocal] = useState(() => {
     const guardadas = localStorage.getItem("lista_peluqueras_Sumary");

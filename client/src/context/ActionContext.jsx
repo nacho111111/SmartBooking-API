@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { toast } from "sonner";
 
 const ActionContext = createContext(null);
 
@@ -8,25 +9,44 @@ export const ActionProvider = ({ children }) => {
 
   const defaultErrorHandler = (err) => {
     const mensaje = err.response?.data?.message || err.message || "Ocurrió un error inesperado";
-    alert(`⚠️ Error: ${mensaje}`);
+    toast.error(mensaje);
   };
 
   const run = async (fn, options = {}) => {
-    const { onError } = options;
+    const { onError, successMessage, loadingMessage} = options;
 
     setCount((c) => c + 1);
     setError(null);
+
+    let toastId = null;
+    if (loadingMessage) {
+      toastId = toast.loading(loadingMessage);
+    }
+
     try {
-      return await fn();
+      const res = await fn();
+
+      if (successMessage) {
+        toast.success(successMessage);
+      }
+      return res;
+
     } catch (err) {
       setError(err);
       console.error(err);
+
       if (onError) {
         onError(err);
       } else {
-        defaultErrorHandler(err);
+        return defaultErrorHandler(err);
       }
+
+      throw err;
     } finally {
+      
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
       setCount((c) => c - 1);
     }
   };

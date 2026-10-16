@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function AppointmentDetail({ appointments , onSaveAll, salesList, peluqueras, handlerUpdate, handleSync}) {
+export function AppointmentDetail({ appointments , onSaveAll, salesList, peluqueras, handlerUpdate, handleSync}) {
   
   useEffect(() => {
     handleSync(appointments,peluqueras);

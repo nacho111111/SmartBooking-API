@@ -1,4 +1,4 @@
-export default function AppointmentList({ appointments, onSelectUser }) {
+export function AppointmentList({ appointments, onSelectUser }) {
   return (
     <table className="table-list">
       <thead>

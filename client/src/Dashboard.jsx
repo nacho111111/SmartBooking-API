@@ -1,3 +1,4 @@
+// hook
 import { useEffect, useState } from "react";
 import { useAppointments } from "./hooks/useAppointments";
 import { useMessages } from "./hooks/useMessages";
@@ -6,19 +7,20 @@ import { usePeluqueras } from "./hooks/usePeluqueras";
 import { useAction } from "./context/ActionContext";
 import { useSales} from "./hooks/useSales";
 
-import AppointmentList from "./components/AppointmentList";
-import AppointmentDetail from "./components/AppointmentDetail";
-import ClientForm from "./components/ClientForm";
-import Summary from "./components/Summary";
-import ListaCitasPorDia from "./components/AppointmentByDay"
-import UserModal from "./components/UserModal";
-import MascotaModal from "./components/MascotaModal";
-import SalesViewer from "./components/SalesViewer";
-import MascotasViewer from "./components/MascotasViewer";
-import LateralPanel from "./components/LateralPanel";
-import WhatsAppAdmin from "./components/WhatsAppAdmin";
-import AdminPeluqueras from "./components/AdminPeluqueras";
-import SummaryMonth from "./components/SummaryMonth";
+// components
+import { AppointmentList } from "./components/AppointmentList";
+import { AppointmentDetail } from "./components/AppointmentDetail";
+import { ClientForm } from "./components/ClientForm";
+import { Summary } from "./components/Summary";
+import { AppointmentByDay } from "./components/AppointmentByDay";
+import { UserModal } from "./components/UserModal";
+import { MascotaModal } from "./components/MascotaModal";
+import { SalesViewer } from "./components/SalesViewer";
+import { MascotasViewer } from "./components/MascotasViewer";
+import { LateralPanel } from "./components/LateralPanel";
+import { WhatsAppAdmin } from "./components/WhatsAppAdmin";
+import { AdminPeluqueras } from "./components/AdminPeluqueras";
+import { SummaryMonth } from "./components/SummaryMonth";
 
 
 export default function Dashboard() {
@@ -83,7 +85,7 @@ export default function Dashboard() {
       {activeTab === 'filtros' && ( 
         <div className="container" > 
           <div className="left" >
-            <ListaCitasPorDia
+            <AppointmentByDay
             onSelectUser={setSelectedUser}
             appointmentsDay={appointmentsDay}
             handleGetByDay={handleGetAppointmentsByDay}

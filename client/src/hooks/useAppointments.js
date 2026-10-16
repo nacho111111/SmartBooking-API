@@ -42,8 +42,8 @@ export const useAppointments = () => {
   const handleSaveFacturas = (lista) => { // facuras y actualiza citas
     run(async () => { 
         await postSincronizarCaja(lista)
-        alert("Caja sincronizada 🚀");
-      })
+        localStorage.setItem("caja_sincronizada", "true");
+      },{successMessage : "Caja sincronizada"})
   };
 
   const handleGetAppointmentsByDay = (day) => {

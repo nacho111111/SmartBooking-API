@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function AdminPeluqueras({ listPeluqueras,addPeluquera, deletePeluquera }) {
+export function AdminPeluqueras({ listPeluqueras,addPeluquera, deletePeluquera }) {
   const [nuevoNombre, setNuevoNombre] = useState('');
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const FacturasList = ({ data, handleGetFacturas, loading}) => {
+export function SalesViewer({ data, handleGetFacturas, loading}) {
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [peluqueraFiltro, setPeluqueraFiltro] = useState('');
   const [usuarioFiltro, setUsuarioFiltro] = useState('');
@@ -206,5 +206,3 @@ const FacturasList = ({ data, handleGetFacturas, loading}) => {
     </div>
   );
 };
-
-export default FacturasList;

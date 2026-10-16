@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SummaryMonth = ({ facturas, handleGetResume, peluqueras}) => {
+export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
     const [mesSeleccionado, setMesSeleccionado] = useState('2026-05');
     const [peluqueraSelec, setPeluqueraSelec] = useState(peluqueras[0]);
 
@@ -177,5 +177,3 @@ const SummaryMonth = ({ facturas, handleGetResume, peluqueras}) => {
     </div>
   );
 };
-
-export default SummaryMonth;

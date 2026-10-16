@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const MascotaModal = ({ mascota, onClose, onUpdateNotes }) => {
+export function MascotaModal({ mascota, onClose, onUpdateNotes }) {
   const [tempNotas, setTempNotas] = useState('');
   const [guardado, setGuardado] = useState(false);
 
@@ -67,5 +67,3 @@ const MascotaModal = ({ mascota, onClose, onUpdateNotes }) => {
     </div>
   );
 };
-
-export default MascotaModal;

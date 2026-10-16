@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { dailyClean } from "../utils/dailyClean"
-import { getFacturasByDay } from "../services/api";
+import { checkDailyClean, markCleanComplete } from "../utils/dailyClean"
+import { getFacturasByDay, postSincronizarCaja } from "../services/api";
+import { useAction } from "../context/ActionContext";
+import { toast } from "sonner";
+
 export const useSales = () => {
+
+    const { run } = useAction();
 
     const [salesList, setSalesList] = useState(() => {
         //localStorage.removeItem("facturacion_borrador");
@@ -34,21 +39,44 @@ export const useSales = () => {
             localStorage.setItem("facturacion_borrador", JSON.stringify(salesList));
         }
         else {
-            localStorage.removeItem("facturacion_borrador");
+            localStorage.removeItem("facturacion_borrador"); 
+            localStorage.removeItem("caja_sincronizada"); 
         }
     }, [salesList]);
 
     useEffect(() => { // limpia dia
-        const runClean = () => {
-            const cleaned = dailyClean();
-            if (cleaned) {
-                setSalesList([]);
+        const executeDailyClean = async() => {
+            const { shouldClean, hoyStr, pendientes } = checkDailyClean();
+
+            if (!shouldClean) return;
+
+            if (pendientes.length > 0) {
+                try {
+                    await handlePostSincronizarCaja(pendientes);
+
+                    toast.warning(
+                        `Se sincronizaron automáticamente ${pendientes.length} cita(s) desfasada(s) del día anterior.`
+                    );
+                } catch (err) {
+                    console.error("Error al auto-sincronizar caja desfasada:", err);
+                    return;
+                }
             }
+            markCleanComplete(hoyStr);
+            setSalesList([]);
         };
-        runClean();
-        const interval = setInterval(runClean, 15 * 60 * 1000);
+
+        executeDailyClean();
+
+        const interval = setInterval(executeDailyClean, 15 * 60 * 1000);
         return () => clearInterval(interval);
     }, []);
+
+    const handlePostSincronizarCaja = (pendientes) => {
+        return run(async () => {
+            await postSincronizarCaja(pendientes);
+        });
+    }
 
     const handleSyncAppointments = (appointments,peluqueras) => {
         if (!appointments || appointments.length === 0) {
@@ -100,6 +128,7 @@ export const useSales = () => {
     };
 
     const handlerUpdateFactura = (index, field, value) => {
+        localStorage.setItem("caja_sincronizada", "false");
         setSalesList(prev => {
             const updated = [...prev];
             const factura = { ...updated[index] };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
+export function MascotasViewer({ data, getMascotas, loading, onSelectMascota }) {
   const [usuarioFiltro, setUsuarioFiltro] = useState('');
   const [mascotaFiltro, setMascotaFiltro] = useState('');
   const [telefonoFiltro, setTelefonoFiltro] = useState('');
@@ -180,5 +180,3 @@ const MascotasConsultor = ({ data, getMascotas, loading, onSelectMascota }) => {
     </div>
   );
 };
-
-export default MascotasConsultor;
