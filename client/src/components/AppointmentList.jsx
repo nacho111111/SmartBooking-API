@@ -6,9 +6,9 @@ export function AppointmentList({ appointments, onSelectUser }) {
           <th>Nombre</th>
           <th>Fecha</th>
           <th>Perro/Gato</th>
-          <th>descripcion</th>
-          <th>tipo</th>
-          <th>ID</th>
+          <th>Descripcion</th>
+          <th>Tipo</th>
+          {/*<th>ID</th>*/}
         </tr>
       </thead>
       <tbody>
@@ -28,7 +28,7 @@ export function AppointmentList({ appointments, onSelectUser }) {
               <td>{a.nombre_mascota}</td>
               <td>{a.descripcion}</td>
               <td>{a.tipo}</td>
-              <td>{a.id_cita}</td>
+              {/*<td>{a.id_cita}</td>*/}
             </tr>
           ))
         ) : (

@@ -22,15 +22,13 @@ export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
         if (totalCitas === 0) return '0%';
         return `${Math.round((asistieron / totalCitas) * 100)}%`;
     };
-    
 
     const handleChange = (mes, peluquera) => {
-        console.log("change")
         const nuevoMes = mes ? mes : mesSeleccionado;
         const nuevaPeluquera = peluquera ? peluquera : peluqueraSelec;
-
-        if (mes) setMesSeleccionado(mes);
-        if (peluquera) setPeluqueraSelec(peluquera);
+  
+        if (nuevoMes) setMesSeleccionado(mes);
+        if (nuevaPeluquera) setPeluqueraSelec(peluquera);
     };
 
     return (

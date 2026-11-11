@@ -4,7 +4,7 @@ export const checkDailyClean = () => {
   const ULTIMA_LIMPIEZA = localStorage.getItem("ultima_limpieza_factura");
 
   const horaLimpieza = new Date();
-  horaLimpieza.setHours(5, 0, 0, 0);
+  horaLimpieza.setHours(1, 0, 0, 0);
 
   if (AHORA < horaLimpieza || ULTIMA_LIMPIEZA === HOY_STR) {
     return { shouldClean: false };

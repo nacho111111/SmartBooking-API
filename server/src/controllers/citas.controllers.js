@@ -110,6 +110,7 @@ export const getCitasPorDia = asyncHandler(async (req, res) => {
 export const createFullCita = transactionHandler (async(req, res, client) => {
     const {nombre_usuario, email, telefono, fecha, nombre_mascota, descripcion} = req.body;
     const telefonoClean = telefono.replace('+', '');
+    
     // 1. usuario
     const userRes = await client.query(
       `INSERT INTO usuarios (nombre_usuario, email, telefono) 
@@ -120,7 +121,7 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
       [nombre_usuario, email, telefonoClean]
     );
     const user = userRes.rows[0];
-
+    
     // 2. Mascota
     const mascotaRes = await client.query(
       `INSERT INTO mascotas (id_usuario, nombre_mascota) 
@@ -140,7 +141,7 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
       [user.id_usuario, mascota.id_mascota, fecha, descripcion]
     );
     const cita = citaRes.rows[0];
-
+    
     const data = {
         id_cita: cita.id_cita,
         id_usuario: cita.id_usuario,
@@ -150,7 +151,8 @@ export const createFullCita = transactionHandler (async(req, res, client) => {
         nombre_mascota: mascota.nombre_mascota,
         nombre_usuario: user.nombre_usuario,
         email: user.email,
-        telefono: user.telefonoClean
+        telefono: user.telefono
     }
+    
     res.json(data);
 })

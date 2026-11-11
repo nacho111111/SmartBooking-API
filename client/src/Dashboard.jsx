@@ -21,6 +21,8 @@ import { LateralPanel } from "./components/LateralPanel";
 import { WhatsAppAdmin } from "./components/WhatsAppAdmin";
 import { AdminPeluqueras } from "./components/AdminPeluqueras";
 import { SummaryMonth } from "./components/SummaryMonth";
+import { DailyCleanModal } from "./components/DailyCleanModal";
+
 
 
 export default function Dashboard() {
@@ -32,7 +34,7 @@ export default function Dashboard() {
   const { appointments, handleAddAppointment, handleSaveFacturas, appointmentsDay, handleGetAppointmentsByDay, handleGetFacturasMoreInfo, facturasInfo, handleGetResumeFacturas, resumeFacturas} = useAppointments(); // citas, factura, fetch
   const { contacts, msgsMore, handleGetMessByNum, handleSendMenssage, selectedContact, setSelectedContact, handleBotState, handleGetHistNums} = useMessages(); // todo messages
   const { mascotasInfo, handleSetMascotasNotes, handleGetMascotasMoreInfo } = useMascotas();
-  const { salesList, handleSyncAppointments, handlerUpdateFactura } = useSales();
+  const { salesList, handleSyncAppointments, handlerUpdateFactura, dailyCleanHandlers} = useSales();
   const { listPeluqueras, handleAddPel, handleDeletePel } = usePeluqueras();
   
   const { error, loading } = useAction();
@@ -103,7 +105,7 @@ export default function Dashboard() {
       )}
       {activeTab === 'mascotas' && ( 
         <div className="container" > 
-          <div style={{width:'50vw'}} className="left" >
+          <div style={{width:'50vw', height:'50vw'}} className="left" >
             <MascotasViewer
             data={mascotasInfo}
             getMascotas={handleGetMascotasMoreInfo}
@@ -158,6 +160,12 @@ export default function Dashboard() {
       <UserModal 
         user={selectedUser} 
         onClose={() => setSelectedUser(null)} 
+      />
+      <DailyCleanModal
+        isOpen={dailyCleanHandlers.isCleanModalOpen }
+        pendientes={dailyCleanHandlers.dailyCleanData.pendientes}
+        onConfirm ={dailyCleanHandlers.handleConfirmClean}
+        onCancel={dailyCleanHandlers.handleCancelClean}
       />
       
     </div>

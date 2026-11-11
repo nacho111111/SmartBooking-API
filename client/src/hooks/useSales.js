@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { checkDailyClean, markCleanComplete } from "../utils/dailyClean"
-import { getFacturasByDay, postSincronizarCaja } from "../services/api";
+import { getFacturasByDay } from "../services/api";
 import { useAction } from "../context/ActionContext";
-import { toast } from "sonner";
-
+import { useDailyClean } from "./useDailyClean";
+// gestion de todo lo relacionado a localStorage
 export const useSales = () => {
 
     const { run } = useAction();
@@ -14,6 +13,9 @@ export const useSales = () => {
         if (saved) return JSON.parse(saved);
         return [];
     });
+
+    const dailyCleanHandlers = useDailyClean(setSalesList); //hook composition
+
     useEffect(() => {// no hay local, pide a db
         const getFacturas = async () => {
             if (salesList.length === 0) {
@@ -44,40 +46,7 @@ export const useSales = () => {
         }
     }, [salesList]);
 
-    useEffect(() => { // limpia dia
-        const executeDailyClean = async() => {
-            const { shouldClean, hoyStr, pendientes } = checkDailyClean();
-
-            if (!shouldClean) return;
-
-            if (pendientes.length > 0) {
-                try {
-                    await handlePostSincronizarCaja(pendientes);
-
-                    toast.warning(
-                        `Se sincronizaron automáticamente ${pendientes.length} cita(s) desfasada(s) del día anterior.`
-                    );
-                } catch (err) {
-                    console.error("Error al auto-sincronizar caja desfasada:", err);
-                    return;
-                }
-            }
-            markCleanComplete(hoyStr);
-            setSalesList([]);
-        };
-
-        executeDailyClean();
-
-        const interval = setInterval(executeDailyClean, 15 * 60 * 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const handlePostSincronizarCaja = (pendientes) => {
-        return run(async () => {
-            await postSincronizarCaja(pendientes);
-        });
-    }
-
+    
     const handleSyncAppointments = (appointments,peluqueras) => {
         if (!appointments || appointments.length === 0) {
             return;
@@ -149,6 +118,7 @@ export const useSales = () => {
     return {
         salesList,
         handleSyncAppointments,
-        handlerUpdateFactura
+        handlerUpdateFactura,
+        dailyCleanHandlers
     }
 }

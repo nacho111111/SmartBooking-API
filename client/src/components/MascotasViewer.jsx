@@ -59,7 +59,7 @@ export function MascotasViewer({ data, getMascotas, loading, onSelectMascota }) 
   const indicePrimerItem = (paginaActual - 1) * itemsPorPagina;
 
   return (
-    <div>
+    <div style={{ height:'100%', display:'flex',flexDirection:'column',justifyContent:'flex-start' }}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <h3 className="mb-4">Consultor de Mascotas</h3>
       </div>
@@ -149,27 +149,27 @@ export function MascotasViewer({ data, getMascotas, loading, onSelectMascota }) 
 
       {/* --- CONTROLES DE PAGINACIÓN --- */}
       {!loading && totalPaginas > 1 && (
-        <div className="d-flex justify-content-between align-items-center mt-3">
-          <div className="text-muted small">
+        <div style={{ flex:1 ,display:'flex',flexDirection:'column',justifyContent:'flex-end'}}>
+          <div>
             Mostrando {indicePrimerItem + 1} a {indicePrimerItem + mascotas.length} de {data.total} mascotas
           </div>
 
           <nav>
-            <ul className="pagination mb-0">
-              <li className={`page-item ${paginaActual === 1 ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => handleSwapPage(-1)} disabled={paginaActual === 1}>
+            <ul className="pagination">
+              <li className={`${paginaActual === 1 ? 'disabled' : ''}`}>
+                <button onClick={() => handleSwapPage(-1)} disabled={paginaActual === 1}>
                   Anterior
                 </button>
               </li>
 
-              <li className="page-item disabled">
-                <span className="page-link text-dark">
+              <li >
+                <span >
                   Página {paginaActual} de {totalPaginas}
                 </span>
               </li>
 
-              <li className={`page-item ${paginaActual === totalPaginas ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => handleSwapPage(1)} disabled={paginaActual === totalPaginas}>
+              <li className={`${paginaActual === totalPaginas ? 'disabled' : ''}`}>
+                <button onClick={() => handleSwapPage(1)} disabled={paginaActual === totalPaginas}>
                   Siguiente
                 </button>
               </li>

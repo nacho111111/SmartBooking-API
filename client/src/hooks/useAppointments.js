@@ -27,8 +27,18 @@ export const useAppointments = () => {
   }, []);
 
   const handleAddAppointment = (form) => {
-    run(async () => { 
-      const nuevaCita = await postCitaFull(form);
+    run(async () => {
+      // fecha de hoy 
+        const hoyStr = new Date().toLocaleDateString('sv-SE'); 
+        //Combinar la fecha actual  "2026-04-22T14:30"
+        const fechaA = `${hoyStr}T${form.fecha}`;
+        // fecha y hora unificadas
+        const formConFecha = {
+            ...form,
+            fecha: fechaA
+        }; 
+      
+      const nuevaCita = await postCitaFull(formConFecha);
       
       setAppointments((prev) => {
       const listaActualizada = [...prev, nuevaCita];
@@ -37,7 +47,7 @@ export const useAppointments = () => {
         });
         return listaActualizada;
       });
-    })
+    },{successMessage : "Usuario ingresado con exito"})
   }
   const handleSaveFacturas = (lista) => { // facuras y actualiza citas
     run(async () => { 

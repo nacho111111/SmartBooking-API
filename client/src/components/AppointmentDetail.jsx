@@ -12,7 +12,7 @@ export function AppointmentDetail({ appointments , onSaveAll, salesList, peluque
       <table className="table-form">
         <thead>
           <tr>
-            <th>ID</th>
+            {/*<th>ID</th>*/}
             <th>Asistió</th>
             <th>Peluquera </th>
             <th>Servicio($)</th>
@@ -26,7 +26,7 @@ export function AppointmentDetail({ appointments , onSaveAll, salesList, peluque
           salesList.map((f, i) => (
             
             <tr key={f.id_cita}>
-              <td>{f.id_cita}</td>
+              {/*<td>{f.id_cita}</td>*/}
               <td>
                 <select 
                   value={f.asistio} 

@@ -3,10 +3,12 @@ import { useState, useEffect } from 'react';
 export function AppointmentByDay({onSelectUser, appointmentsDay, handleGetByDay}) {
     const [fechaSeleccionada, setFechaSeleccionada] = useState('');
 
-    const handleSelectFecha = (e) => { 
-        const nuevaFecha = e.target.value;
-        setFechaSeleccionada(nuevaFecha); 
-        handleGetByDay(nuevaFecha);
+    const handleSelectFecha = (fecha) => { 
+        
+        if (fecha) {
+            setFechaSeleccionada(fecha); 
+            handleGetByDay(fecha);
+        }
     }
     return (
     <div>
@@ -17,7 +19,7 @@ export function AppointmentByDay({onSelectUser, appointmentsDay, handleGetByDay}
                 type="date" 
                 className="form-control"
                 value={fechaSeleccionada} 
-                onChange={handleSelectFecha}
+                onChange={(e) => handleSelectFecha(e.target.value)} 
                 style={{ maxWidth: '200px' }}
                 />
         </div>

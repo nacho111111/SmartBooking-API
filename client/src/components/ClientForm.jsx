@@ -28,7 +28,7 @@ export function ClientForm({ onAdd ,setShowForm }) {
       <input name="telefono" placeholder="Teléfono" value={form.telefono} onChange={handleChange} />
       
       <input
-        type="datetime-local"
+        type="time"
         name="fecha"
         value={form.fecha}
         onChange={handleChange}
