@@ -137,3 +137,11 @@ export const getResumeFacturas = (mes, peluquera) => {
     }).then(handleResponse);
 };
 
+export const getDailyPayMonth = (yearMonth) => {
+  const params = new URLSearchParams({
+    yearMonth: yearMonth.toString(),
+  })
+  return fetch(`${API_URL}/facturas/daily-month?${params}`,{
+    credentials: 'include'
+    }).then(handleResponse);
+}

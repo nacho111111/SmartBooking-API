@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { postCitaFull, getAppointmentsByDay, getFacturasMoreInfo, getResumeFacturas, postSincronizarCaja } from "../services/api";
+import { postCitaFull, getAppointmentsByDay, getFacturasMoreInfo, getResumeFacturas, postSincronizarCaja, getDailyPayMonth } from "../services/api";
 import { useAction } from "../context/ActionContext";
 
 export const useAppointments = () => {
@@ -8,6 +8,7 @@ export const useAppointments = () => {
   const [appointmentsDay, setAppointmentsDay] = useState([]); // citas con select por dia
   const [facturasInfo, setFacturasInfo] = useState([]); // facturas todo
   const [resumeFacturas, setResumeFactura] = useState(""); // resume de mes
+  const [dailyPayMonth, setDailyPayMonth] = useState(""); // resumen por dia de pagos
   
   const { run } = useAction();
 
@@ -75,6 +76,13 @@ export const useAppointments = () => {
       setResumeFactura(data);
     })
   }
+  const handleGetDailyPayMonth = (yearMonth) => {
+    run(async () => {
+      if (!yearMonth) return
+      const data = await getDailyPayMonth(yearMonth);
+      setDailyPayMonth(data)
+    })
+  }
  
   return {
     appointments,
@@ -85,6 +93,8 @@ export const useAppointments = () => {
     facturasInfo,
     handleGetAppointmentsByDay,
     handleGetResumeFacturas,
-    resumeFacturas
+    resumeFacturas,
+    handleGetDailyPayMonth,
+    dailyPayMonth
   };
 };

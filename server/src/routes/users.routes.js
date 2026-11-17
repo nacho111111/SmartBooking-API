@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createUser, deleteUser, getUser, getUsers, updateUser, setBotActive } from "../controllers/users.controllers.js";
 import { createCita, deleteCita, getCita, getCitas, getCitasDeUsuario, getCitasPorDia, updateCita, createFullCita } from "../controllers/citas.controllers.js";
-import { createFactura, deleteFactura, getFactura, updateFactura, getFacturasPaginadas, getResumenMensualPeluquera, getFacturasPorDia} from "../controllers/facturas.controllers.js";
+import { createFactura, deleteFactura, getFactura, updateFactura, getFacturasPaginadas, getResumenMensualPeluquera, getFacturasPorDia, getDailyPayMonth} from "../controllers/facturas.controllers.js";
 import { getMascotasPaginadas, getMascotasFull, updateMascota } from "../controllers/mascotas.controllers.js";
 import { sincronizarCaja } from "../controllers/caja.controller.js";
 import { hookCitaCal } from "../webhooks/calHandlers.js"
@@ -46,6 +46,7 @@ router.put("/citas/:id", updateCita);
 router.get("/facturas", getFacturasPaginadas);
 router.get("/facturas/resume", getResumenMensualPeluquera)
 router.get("/facturas/dia/:dia", getFacturasPorDia);
+router.get('/facturas/daily-month',getDailyPayMonth)
 
 router.get("/facturas/:id", getFactura);
 router.post("/facturas", createFactura);

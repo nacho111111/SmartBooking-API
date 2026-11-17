@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
-    const [mesSeleccionado, setMesSeleccionado] = useState('2026-05');
+    const [mesSeleccionado, setMesSeleccionado] = useState('');
     const [peluqueraSelec, setPeluqueraSelec] = useState(peluqueras[0]);
+
+    useEffect(() => {
+        if (!peluqueraSelec && peluqueras.length > 0) {
+            setPeluqueraSelec(peluqueras[0]);
+        }
+    }, [peluqueras, peluqueraSelec]);
 
     useEffect(() => {
         if (mesSeleccionado && peluqueraSelec) {
@@ -23,13 +29,7 @@ export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
         return `${Math.round((asistieron / totalCitas) * 100)}%`;
     };
 
-    const handleChange = (mes, peluquera) => {
-        const nuevoMes = mes ? mes : mesSeleccionado;
-        const nuevaPeluquera = peluquera ? peluquera : peluqueraSelec;
   
-        if (nuevoMes) setMesSeleccionado(mes);
-        if (nuevaPeluquera) setPeluqueraSelec(peluquera);
-    };
 
     return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' ,alignItems: 'center'}}>
@@ -44,7 +44,7 @@ export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
             type="month" 
             className="form-control" 
             value={mesSeleccionado} 
-            onChange={(e) => handleChange(e.target.value, null)} 
+            onChange={(e) => setMesSeleccionado(e.target.value)} 
             />
         </div>
         <div className="column">
@@ -53,7 +53,7 @@ export function SummaryMonth({ facturas, handleGetResume, peluqueras}) {
             <select 
             className="form-control"
             value={peluqueraSelec} 
-            onChange={(e) => handleChange(null, e.target.value)}
+            onChange={(e) => setPeluqueraSelec(e.target.value)}
             >
             {peluqueras.map((nombre, index) => (
             <option key={index} value={nombre}>{nombre}</option>

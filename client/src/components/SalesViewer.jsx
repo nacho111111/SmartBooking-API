@@ -164,7 +164,7 @@ export function SalesViewer({ data, handleGetFacturas, loading}) {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="text-center text-muted p-4">
+                <td colSpan="10" className="text-center text-muted p-4">
                   No se encontraron mascotas con esos criterios.
                 </td>
             </tr>

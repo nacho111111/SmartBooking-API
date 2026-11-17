@@ -274,3 +274,32 @@ export const getResumenMensualPeluquera = asyncHandler(async (req, res) => {
         }
     });
 });
+
+export const getDailyPayMonth = asyncHandler(async (req, res) => {
+    const { yearMonth } = req.query;
+
+    if (!yearMonth) {
+        return res.status(400).json({ message: "Faltan parámetros requeridos: yearMonth." });
+    }
+
+    const startDate = yearMonth.length === 7 ? `${yearMonth}-01` : yearMonth;
+    const query = `
+        SELECT 
+            TO_CHAR(c.hora_atencion::date, 'YYYY-MM-DD') AS fecha,
+            COALESCE(SUM(f.total_final), 0) AS total
+        FROM facturas f
+        INNER JOIN citas c ON f.id_cita = c.id_cita
+        WHERE c.hora_atencion >= $1::timestamp
+        AND c.hora_atencion < $1::timestamp + INTERVAL '1 month'
+        GROUP BY c.hora_atencion::date
+        ORDER BY fecha ASC;
+    `;
+
+    const { rows } = await pool.query(query, [startDate]);
+    const dailyTotals = rows.reduce((acc, row) => {
+      acc[row.fecha] = Number(row.total);
+      return acc;
+    }, {});
+
+    return res.status(200).json(dailyTotals);
+});
