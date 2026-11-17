@@ -419,7 +419,8 @@ li{
 
 /* Celdas de cada día (sin ingresos) */
 .calendar-day {
-  height: 5.5rem;
+  min-height: 6.5rem; /* un poco más alta para alojar las 3 etiquetas */
+  height: auto;
   padding: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background-color: rgba(39, 70, 97, 0.25); /* --cafe-dark muy tenue */
@@ -454,17 +455,37 @@ li{
 
 /* Etiqueta de monto */
 .calendar-amount {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #ffffff;
   background-color: var(--cafe-medium); /* #326699 */
   border: 1px solid rgba(74, 144, 226, 0.4);
-  padding: 0.2rem 0.35rem;
+  padding: 0.15rem 0.3rem;
   border-radius: 0.25rem;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.calendar-amounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.25rem;
+}
+
+.calendar-amount--biz {
+  background-color: var(--cafe-dark);
+  border-color: var(--cafe-light);
+  color: #93c5fd;
+}
+
+.calendar-amount--iva {
+  background-color: rgba(26, 37, 47, 0.85);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #cbd5e1;
+  font-weight: 500;
 }
 
 .calendar-day--has-income:hover .calendar-amount {

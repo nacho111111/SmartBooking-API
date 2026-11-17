@@ -76,10 +76,10 @@ export const useAppointments = () => {
       setResumeFactura(data);
     })
   }
-  const handleGetDailyPayMonth = (yearMonth) => {
+  const handleGetDailyPayMonth = (yearMonth,peluquera) => {
     run(async () => {
-      if (!yearMonth) return
-      const data = await getDailyPayMonth(yearMonth);
+      if (!yearMonth || !peluquera) return
+      const data = await getDailyPayMonth(yearMonth,peluquera);
       setDailyPayMonth(data)
     })
   }

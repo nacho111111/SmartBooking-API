@@ -2,13 +2,13 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, getDay, format, addMonths,
 import { es } from 'date-fns/locale';
 import { useState, useEffect } from 'react';
 
-export function SummaryDayMonth({ yearMonth = {}, handleDayMonth }) {
+export function SummaryDayMonth({ yearMonth = {}, handleDayMonth, peluqueras }) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     if (currentDate) {
       const formattedMonth = format(currentDate, 'yyyy-MM');
-      handleDayMonth(formattedMonth);
+      handleDayMonth(formattedMonth, peluqueras[0]);
     }
   }, [currentDate]);
 
@@ -61,19 +61,27 @@ export function SummaryDayMonth({ yearMonth = {}, handleDayMonth }) {
 
         {daysInMonth.map((day) => {
           const dateKey = format(day, 'yyyy-MM-dd');
-          const dayAmount = yearMonth?.[dateKey];
+          const dayData = yearMonth?.[dateKey];
 
           return (
             <div
               key={dateKey}
-              className={`calendar-day ${dayAmount ? 'calendar-day--has-income' : ''}`}
+              className={`calendar-day ${dayData ? 'calendar-day--has-income' : ''}`}
             >
               <span className="calendar-day-number">{format(day, 'd')}</span>
-              {dayAmount ? (
-                <span className="calendar-amount" title={`$${dayAmount.toLocaleString('es-CL')}`}>
-                  ${dayAmount.toLocaleString('es-CL')}
-                </span>
-              ) : (
+              {dayData ? (
+                <div className="calendar-amounts-list">
+                  <span className="calendar-amount" title={`Total: $${dayData.total.toLocaleString('es-CL')}`}>
+                    Tot: ${dayData.total.toLocaleString('es-CL')}
+                  </span>
+                  <span className="calendar-amount calendar-amount--biz" title={`Negocio: $${dayData.negocio.toLocaleString('es-CL')}`}>
+                    Neg: ${dayData.negocio.toLocaleString('es-CL')}
+                  </span>
+                  <span className="calendar-amount calendar-amount--iva" title={`IVA (19%): $${dayData.iva.toLocaleString('es-CL')}`}>
+                    IVA: ${dayData.iva.toLocaleString('es-CL')}
+                  </span>
+                </div>
+              ): (
                 <span className="calendar-empty-amount">-</span>
               )}
             </div>

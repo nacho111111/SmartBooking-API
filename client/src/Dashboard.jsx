@@ -149,7 +149,8 @@ export default function Dashboard() {
           <div className="right">
             <SummaryDayMonth 
             yearMonth={dailyPayMonth} 
-            handleDayMonth={handleGetDailyPayMonth} />
+            handleDayMonth={handleGetDailyPayMonth} 
+            peluqueras={listPeluqueras}/>
       </div>
           
         </div>
